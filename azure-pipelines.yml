@@ -23,13 +23,12 @@ stages:
   - stage: Provision
     displayName: Provision Azure resources from ARM template
 
-
     jobs:
       - job: DeployARM
         displayName: Deploy ARM template
         pool:
           vmImage: $(vmImageName)
-        
+
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
