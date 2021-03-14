@@ -21,7 +21,10 @@
         "storageAccountName": "[concat('st', variables('projjectNameNoDashes'))]",
         "appServicePlanName": "[concat('plan-', parameters('projectName'))]",
         "functionAppName": "[concat('func-', parameters('projectName'))]",
-        "applicationInsightsName": "[concat('appi-', parameters('projectName'))]"
+        "applicationInsightsName": "[concat('appi-', parameters('projectName'))]",
+        "serviceBusNamespaceName": "[concat('sb-', parameters('projectName'))]",
+        "serviceBusQueueName": "[concat('sbq-', parameters('projectName'))]",
+        "keyVaultName": "[concat('kv-', parameters('projectName'))]"
     },
     "resources": [
         {
@@ -59,7 +62,8 @@
             "kind": "functionapp,linux",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusNamespaceName'))]"
             ],
             "properties": {
                 "enabled": true,
@@ -77,6 +81,10 @@
                         {
                             "name": "AzureWebJobsAzureSBConnection",
                             "value": "123456"
+                        },
+                        {
+                            "name": "AzureWebJobsServiceBus",
+                            "value": "1122"
                         }
                     ]
                 }
@@ -92,6 +100,63 @@
             "properties": {
                 "ApplicationId": "[variables('applicationInsightsName')]",
                 "Application_Type": "web"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces",
+            "apiVersion": "2018-01-01-preview",
+            "name": "[variables('serviceBusNamespaceName')]",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tags')]",
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic"
+            },
+            "properties": { "zoneRedundant": false },
+            "resources": [
+                {
+                    "type": "Queues",
+                    "apiVersion": "2017-04-01",
+                    "name": "[concat(variables('serviceBusQueueName'), '-output')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusNamespaceName'))]"
+                    ],
+                    "properties": {
+                        "lockDuration": "PT30S",
+                        "maxSizeInMegabytes": 1024,
+                        "requiresDuplicateDetection": false,
+                        "requiresSession": false,
+                        "defaultMessageTimeToLive": "P14D",
+                        "deadLetteringOnMessageExpiration": false,
+                        "enableBatchedOperations": true,
+                        "duplicateDetectionHistoryTimeWindow": "PT10M",
+                        "maxDeliveryCount": 10,
+                        "status": "Active",
+                        "enablePartitioning": false,
+                        "enableExpress": false
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2019-09-01",
+            "name": "[variables('keyVaultName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "enabledForTemplateDeployment": true,
+                "tenantId": "[subscription().tenantId]",
+                "sku": {
+                    "name": "standard",
+                    "family": "A"
+                },
+                "accessPolicies": [
+
+                ],
+                "networkAcls": {
+                    "defaultAction": "Allow",
+                    "bypass": "AzureServices"
+                }
             }
         }
     ],
@@ -111,6 +176,10 @@
         "applicationInsightsName": {
             "type": "string",
             "value": "[variables('applicationInsightsName')]"
+        },
+        "serviceBusNamespace": {
+            "type": "string",
+            "value": "[variables('serviceBusNamespaceName')]"
         }
     }
 }
