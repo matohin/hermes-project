@@ -20,8 +20,34 @@ variables:
   workingDirectory: "$(System.DefaultWorkingDirectory)/"
 
 stages:
+  - stage: Provision
+    displayName: Provision Azure resources from ARM template
+
+
+    jobs:
+      - job: DeployARM
+        displayName: Deploy ARM template
+        pool:
+          vmImage: $(vmImageName)
+        
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)'
+              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'rg-hermes-project-dev-00'
+              location: 'North Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'arm_templates/azuredeploy.json'
+              csmParametersFile: 'arm_templates/azuredeploy.parameters.dev-00.json'
+              deploymentMode: 'Complete'
+
   - stage: Build
     displayName: Build stage
+    dependsOn: Provision
+    condition: succeeded()
 
     jobs:
       - job: Build
