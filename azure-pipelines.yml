@@ -46,8 +46,6 @@ stages:
 
   - stage: Build
     displayName: Build stage
-    dependsOn: Provision
-    condition: succeeded()
 
     jobs:
       - job: Build
@@ -90,7 +88,9 @@ stages:
 
   - stage: Deploy
     displayName: Deploy stage
-    dependsOn: Build
+    dependsOn: 
+    - Provision
+    - Build
     condition: succeeded()
 
     jobs:
