@@ -11,7 +11,7 @@ variables:
   azureSubscription: "610c71ed-2441-4640-9b27-39af858d0ba4"
 
   # Function app name
-  functionAppName: "func-hermes-project-dev"
+  functionAppName: "func-hermes-project-dev-00"
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
@@ -32,16 +32,17 @@ stages:
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)'
-              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'rg-hermes-project-dev-00'
-              location: 'North Europe'
-              templateLocation: 'Linked artifact'
-              csmFile: 'arm_templates/azuredeploy.json'
-              csmParametersFile: 'arm_templates/azuredeploy.parameters.dev-00.json'
-              deploymentMode: 'Complete'
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)"
+              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "rg-hermes-project-dev-00"
+              location: "North Europe"
+              templateLocation: "Linked artifact"
+              csmFile: "arm_templates/azuredeploy.json"
+              csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
+              deploymentMode: "Complete"
+              deploymentOutputs: arm_outputs
 
   - stage: Build
     displayName: Build stage
