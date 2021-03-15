@@ -7,6 +7,11 @@
             "defaultValue": "[resourceGroup().name]",
             "metadata": { "description": "Project name, will be used in resource names" }
         },
+        "functionAppName": {
+            "type": "string",
+            "defaultValue": "[concat('func-', parameters('projectName'))]",
+            "metadata": { "description": "Function app name, will be used in resource names" }
+        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -20,7 +25,7 @@
         "tags": { "environment": "dev" },
         "storageAccountName": "[concat('st', variables('projjectNameNoDashes'))]",
         "appServicePlanName": "[concat('plan-', parameters('projectName'))]",
-        "functionAppName": "[concat('func-', parameters('projectName'))]",
+        "functionAppName": "[parameters('functionAppName')]",
         "applicationInsightsName": "[concat('appi-', parameters('projectName'))]",
         "serviceBusNamespaceName": "[concat('sb-', parameters('projectName'))]",
         "serviceBusQueueName": "[concat('sbq-', parameters('projectName'))]",

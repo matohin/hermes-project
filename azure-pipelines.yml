@@ -1,6 +1,3 @@
-# Python Function App to Linux on Azure
-# Build a Python function app and deploy it to Azure as a Linux function app.
-# Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 trigger:
@@ -10,8 +7,11 @@ variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: "610c71ed-2441-4640-9b27-39af858d0ba4"
 
+  # Project name
+  projectName: "hermes-proj"
+
   # Function app name
-  functionAppName1: "func-hermes-project-dev-00"
+  functionAppName: "func-$(projectName"
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
@@ -41,9 +41,8 @@ stages:
               templateLocation: "Linked artifact"
               csmFile: "arm_templates/azuredeploy.json"
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
-              deploymentMode: "Incremental"
-              deploymentOutputs: "arm_outputs"
-            name: AzureResourceManagerTemplateDeployment
+              deploymentMode: "Complete"
+              overrideParameters: "-functionAppName $(functionAppName)"
 
   - stage: Build
     displayName: Build stage
@@ -63,29 +62,30 @@ stages:
             workingDirectory: $(workingDirectory)
             displayName: "Build extensions"
 
-    #       - task: UsePythonVersion@0
-    #         displayName: "Use Python 3.6"
-    #         inputs:
-    #           versionSpec: 3.6 # Functions V2 supports Python 3.6 as of today
+          - task: UsePythonVersion@0
+            displayName: "Use Python 3.6"
+            inputs:
+              versionSpec: 3.6 # Functions V2 supports Python 3.6 as of today
 
-    #       - bash: |
-    #           python -m venv worker_venv
-    #           source worker_venv/bin/activate
-    #           pip install -r requirements.txt
-    #         workingDirectory: $(workingDirectory)
-    #         displayName: "Install application dependencies"
+          - bash: |
+              python -m venv worker_venv
+              source worker_venv/bin/activate
+              pip install -r requirements.txt
+            workingDirectory: $(workingDirectory)
+            displayName: "Install application dependencies"
 
-    #       - task: ArchiveFiles@2
-    #         displayName: "Archive files"
-    #         inputs:
-    #           rootFolderOrFile: "$(workingDirectory)"
-    #           includeRootFolder: false
-    #           archiveType: zip
-    #           archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-    #           replaceExistingArchive: true
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "$(workingDirectory)"
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+              replaceExistingArchive: true
 
-    #       - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-    #         artifact: drop
+          - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+            artifact: drop
+
   - stage: Deploy
     displayName: Deploy stage
     dependsOn:
