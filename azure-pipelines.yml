@@ -43,6 +43,7 @@ stages:
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
               deploymentOutputs: 'functionsAppServicePlanOutputs'
+          - pwsh: Write-Host $env:functionsAppServicePlanOutputs
 
   - stage: Build
     displayName: Build stage
@@ -104,8 +105,6 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host 'dd'
-
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
