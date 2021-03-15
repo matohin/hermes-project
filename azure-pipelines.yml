@@ -108,7 +108,7 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
-                      Write-Host "Hello World"
+                      Write-Host "$env:arm_outputs"
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
