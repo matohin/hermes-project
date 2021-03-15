@@ -104,7 +104,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host env:armOutputs
+                - pwsh: Write-Host $env:armOutputs
                   env:
                     armOutputs: $(armOutputs) 
 
