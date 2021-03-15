@@ -43,11 +43,7 @@ stages:
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
               deploymentOutputs: "arm_outputs"
-
-          - pwsh: "##vso[task.setvariable variable=functionAppName;isOutput=true]$env:arm_outputs | Write-Output"
-            name: OutputFunctionAppName
-            env:
-              arm_outputs: $(arm_outputs)
+            name: AzureResourceManagerTemplateDeployment
 
   - stage: Build
     displayName: Build stage
@@ -91,13 +87,13 @@ stages:
     #       - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #         artifact: drop
   - stage: Deploy
-    displayName: Deploy stage $(functionsAppServicePlanOutputs)
+    displayName: Deploy stage
     dependsOn:
       - Provision
       - Build
     condition: succeeded()
     variables:
-      functionAppName: $[ stageDependencies.Provision.DeployARM.outputs['OutputFunctionAppName.functionAppName'] ]
+      functionAppName: $[ stageDependencies.Provision.DeployARM.outputs['AzureResourceManagerTemplateDeployment.arm_outputs'] ]
 
     jobs:
       - deployment: Deploy
@@ -110,9 +106,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host "This is a script that could use $env:functionAppName"
-                  env:
-                    functionAppName: $(functionAppName)
+                - pwsh: echo $(functionAppName)
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
