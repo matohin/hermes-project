@@ -42,7 +42,7 @@ stages:
               csmFile: "arm_templates/azuredeploy.json"
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
-              deploymentOutputs: armOutputs
+              deploymentOutputs: 'functionsAppServicePlanOutputs'
 
   - stage: Build
     displayName: Build stage
@@ -87,7 +87,7 @@ stages:
     #         artifact: drop
 
   - stage: Deploy
-    displayName: Deploy stage
+    displayName: Deploy stage $(functionsAppServicePlanOutputs)
     dependsOn:
       - Provision
       - Build
@@ -104,7 +104,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host $(armOutputs)
+                - pwsh: Write-Host 'dd'
 
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
