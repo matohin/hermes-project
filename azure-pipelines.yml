@@ -44,7 +44,7 @@ stages:
               deploymentMode: "Incremental"
               deploymentOutputs: "arm_outputs"
 
-          - pwsh: "Write-Output ##vso[task.setvariable variable=functionAppName;isOutput=true]$env:arm_outputs"
+          - pwsh: "##vso[task.setvariable variable=functionAppName;isOutput=true]$env:arm_outputs | Write-Output"
             name: OutputFunctionAppName
             env:
               arm_outputs: $(arm_outputs)
