@@ -42,7 +42,7 @@ stages:
               csmFile: "arm_templates/azuredeploy.json"
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
-              deploymentOutputs: 'functionsAppServicePlanOutputs'
+              deploymentOutputs: 'arm_outputs'
           - pwsh: Write-Host "This is a script that could use $env:arm_outputs"
             env:
               arm_outputs: $(arm_outputs)
