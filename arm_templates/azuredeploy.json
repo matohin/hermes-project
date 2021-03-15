@@ -24,7 +24,11 @@
         "applicationInsightsName": "[concat('appi-', parameters('projectName'))]",
         "serviceBusNamespaceName": "[concat('sb-', parameters('projectName'))]",
         "serviceBusQueueName": "[concat('sbq-', parameters('projectName'))]",
-        "keyVaultName": "[concat('kv-', parameters('projectName'))]"
+        "keyVaultName": "[concat('kv-', parameters('projectName'))]",
+        "defaultSASKeyName": "RootManageSharedAccessKey",
+        "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
+
+
     },
     "resources": [
         {
@@ -58,6 +62,7 @@
             "apiVersion": "2018-11-01",
             "name": "[variables('functionAppName')]",
             "location": "[parameters('location')]",
+            "identity": { "type": "SystemAssigned" },
             "tags": "[variables('tags')]",
             "kind": "functionapp,linux",
             "dependsOn": [
@@ -80,11 +85,7 @@
                         },
                         {
                             "name": "AzureWebJobsAzureSBConnection",
-                            "value": "123456"
-                        },
-                        {
-                            "name": "AzureWebJobsServiceBus",
-                            "value": "1122"
+                            "value": "[listkeys(variables('authRuleResourceId'), '2017-04-01').primaryConnectionString]"
                         }
                     ]
                 }
@@ -180,6 +181,10 @@
         "serviceBusNamespace": {
             "type": "string",
             "value": "[variables('serviceBusNamespaceName')]"
+        },
+        "keyVaultName": {
+            "type": "string",
+            "value": "[variables('keyVaultName')]"
         }
     }
 }
