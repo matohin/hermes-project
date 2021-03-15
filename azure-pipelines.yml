@@ -11,7 +11,7 @@ variables:
   projectName: "hermes-proj"
 
   # Function app name
-  functionAppName: "func-$(projectName"
+  functionAppName: "func-$(projectName)"
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
