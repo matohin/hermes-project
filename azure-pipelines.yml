@@ -108,7 +108,8 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
-                      Write-Host '$(arm_outputs)'
+                      Write-Host "($env:arm_outputs | convertfrom-json)"
+
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
