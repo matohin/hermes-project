@@ -43,7 +43,9 @@ stages:
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
               deploymentOutputs: "arm_outputs"
-          - pwsh: Write-Host "This is a script that could use $env:arm_outputs"
+
+          - pwsh: "##vso[task.setvariable variable=functionAppName;isOutput=true]$env:arm_outputs"
+            name: OutputFunctionAppName
             env:
               arm_outputs: $(arm_outputs)
 
@@ -64,7 +66,6 @@ stages:
               fi
             workingDirectory: $(workingDirectory)
             displayName: "Build extensions"
-
 
     #       - task: UsePythonVersion@0
     #         displayName: "Use Python 3.6"
@@ -102,7 +103,7 @@ stages:
         environment: "development"
         dependsOn: DeployARM
         variables:
-          arm_outputs: $[ dependencies.DeployARM.outputs['arm_outputs'] ]
+          functionAppName: $[ dependencies.DeployARM.outputs['OutputFunctionAppName.functionAppName'] ]
         pool:
           vmImage: $(vmImageName)
 
@@ -110,9 +111,9 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host "This is a script that could use $env:arm_outputs"
+                - pwsh: Write-Host "This is a script that could use $env:functionAppName"
                   env:
-                    arm_outputs: $(arm_outputs)
+                    functionAppName: $(functionAppName)
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
