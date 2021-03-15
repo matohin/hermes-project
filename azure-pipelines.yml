@@ -42,7 +42,7 @@ stages:
               csmFile: "arm_templates/azuredeploy.json"
               csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
               deploymentMode: "Incremental"
-              deploymentOutputs: 'arm_outputs'
+              deploymentOutputs: "arm_outputs"
           - pwsh: Write-Host "This is a script that could use $env:arm_outputs"
             env:
               arm_outputs: $(arm_outputs)
@@ -64,6 +64,7 @@ stages:
               fi
             workingDirectory: $(workingDirectory)
             displayName: "Build extensions"
+
 
     #       - task: UsePythonVersion@0
     #         displayName: "Use Python 3.6"
@@ -88,7 +89,6 @@ stages:
 
     #       - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #         artifact: drop
-
   - stage: Deploy
     displayName: Deploy stage $(functionsAppServicePlanOutputs)
     dependsOn:
@@ -100,6 +100,9 @@ stages:
       - deployment: Deploy
         displayName: Deploy
         environment: "development"
+        dependsOn: DeployARM
+        variables:
+          arm_outputs: $[ dependencies.DeployARM.outputs['arm_outputs'] ]
         pool:
           vmImage: $(vmImageName)
 
@@ -107,6 +110,9 @@ stages:
           runOnce:
             deploy:
               steps:
+                - pwsh: Write-Host "This is a script that could use $env:arm_outputs"
+                  env:
+                    arm_outputs: $(arm_outputs)
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
