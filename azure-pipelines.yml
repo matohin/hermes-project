@@ -11,7 +11,7 @@ variables:
   azureSubscription: "610c71ed-2441-4640-9b27-39af858d0ba4"
 
   # Function app name
-  functionAppName: "func-hermes-project-dev-00"
+  functionAppName1: "func-hermes-project-dev-00"
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
@@ -96,6 +96,8 @@ stages:
       - Provision
       - Build
     condition: succeeded()
+    variables:
+      functionAppName: $[ stageDependencies.Provision.DeployARM.outputs['OutputFunctionAppName.functionAppName'] ]
 
     jobs:
       - deployment: Deploy
@@ -116,6 +118,6 @@ stages:
                   inputs:
                     azureSubscription: "Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)"
                     appType: "functionAppLinux"
-                    appName: "func-rg-hermes-project-dev-00"
+                    appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
