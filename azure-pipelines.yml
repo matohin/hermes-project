@@ -109,8 +109,8 @@ stages:
                     targetType: 'inline'
                     script: |
                       Write-Host "$env:arm_outputs"
-                      env:
-                        arm_outputs: $(arm_outputs)
+                  env:
+                    arm_outputs: $(arm_outputs)
 
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
