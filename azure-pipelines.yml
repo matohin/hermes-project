@@ -101,9 +101,6 @@ stages:
       - deployment: Deploy
         displayName: Deploy
         environment: "development"
-        dependsOn: DeployARM
-        variables:
-          functionAppName: $[ dependencies.DeployARM.outputs['OutputFunctionAppName.functionAppName'] ]
         pool:
           vmImage: $(vmImageName)
 
