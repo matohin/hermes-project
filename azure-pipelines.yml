@@ -104,9 +104,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - pwsh: Write-Host $env:armOutputs
-                  env:
-                    armOutputs: $(armOutputs) 
+                - pwsh: Write-Host $(armOutputs)
 
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
