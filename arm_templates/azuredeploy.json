@@ -91,8 +91,17 @@
                         {
                             "name": "AzureWebJobsAzureSBConnection",
                             "value": "[listkeys(variables('authRuleResourceId'), '2017-04-01').primaryConnectionString]"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~3"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "python"
                         }
-                    ]
+                    ],
+                    "linuxFxVersion": "python|3.7"
                 }
             }
         },
