@@ -4,9 +4,6 @@
     "parameters": {
         "projectName": {
             "value": "hermes-proj"
-        },
-        "location": {
-            "value": "West Europe"
         }
     }
 }

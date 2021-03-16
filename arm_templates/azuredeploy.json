@@ -59,7 +59,8 @@
             },
             "properties": {
                 "name": "[variables('appServicePlanName')]",
-                "computeMode": "Dynamic"
+                "computeMode": "Dynamic",
+                "reserved": true
             }
         },
         {
@@ -78,7 +79,7 @@
             "properties": {
                 "enabled": true,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
-                "linuxFxVersion": "PYTHON|3.8",
+                "linuxFxVersion": "PYTHON|3.7",
                 "http20Enabled": true,
                 "detailedErrorLoggingEnabled": true,
                 "siteConfig": {
