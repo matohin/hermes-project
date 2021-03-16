@@ -52,7 +52,7 @@
             "name": "[variables('appServicePlanName')]",
             "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
-            "kind": "Linux",
+            "kind": "functionapp,linux",
             "sku": {
                 "name": "Y1",
                 "tier": "Dynamic"
