@@ -78,7 +78,7 @@
             "properties": {
                 "enabled": true,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
-                "linuxFxVersion": "Python|3.7",
+                "linuxFxVersion": "PYTHON|3.8",
                 "http20Enabled": true,
                 "detailedErrorLoggingEnabled": true,
                 "siteConfig": {
