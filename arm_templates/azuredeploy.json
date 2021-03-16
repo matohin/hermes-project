@@ -101,7 +101,7 @@
                             "value": "python"
                         }
                     ],
-                    "linuxFxVersion": "python|3.7"
+                    "linuxFxVersion": "PYTHON|3.7"
                 }
             }
         },
