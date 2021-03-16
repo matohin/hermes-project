@@ -63,9 +63,9 @@ stages:
             displayName: "Build extensions"
 
           - task: UsePythonVersion@0
-            displayName: "Use Python 3.6"
+            displayName: "Use Python 3.7"
             inputs:
-              versionSpec: 3.6 # Functions V2 supports Python 3.6 as of today
+              versionSpec: 3.7
 
           - bash: |
               python -m venv worker_venv
@@ -104,7 +104,6 @@ stages:
           runOnce:
             deploy:
               steps:
-
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
