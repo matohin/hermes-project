@@ -52,11 +52,11 @@
             "name": "[variables('appServicePlanName')]",
             "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
+            "kind": "Linux",
             "sku": {
                 "name": "Y1",
                 "tier": "Dynamic"
             },
-            "kind": "functionapp",
             "properties": {
                 "name": "[variables('appServicePlanName')]",
                 "computeMode": "Dynamic"
