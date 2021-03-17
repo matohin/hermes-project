@@ -1,6 +1,5 @@
 import logging
 import azure.functions as func
-import urllib3
 import json
 import requests
 

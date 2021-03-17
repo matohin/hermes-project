@@ -4,6 +4,9 @@
     "parameters": {
         "projectName": {
             "value": "hermes-proj"
+        },
+        "azureAdUserWithFullSecretAccess": {
+            "value": "d2ef4de0-2ae8-4e86-b98d-ab9c63393fee"
         }
     }
 }

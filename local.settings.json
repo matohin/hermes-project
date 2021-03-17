@@ -2,6 +2,9 @@
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsAzureSBConnection": "Endpoint=sb://sb-hermes-proj.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=ksRhNSBD2GcgsM5m4ZhRof82Y8geJ7Td0BPVLhyHwDY=",
+    "FUNCTIONS_EXTENSION_VERSION": "~3",
+    "KEY_VAULT_URI": "https://kv-hermes-proj.vault.azure.net/"
   }
 }

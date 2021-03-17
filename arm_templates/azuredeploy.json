@@ -18,6 +18,12 @@
             "metadata": {
                 "description": "Location for all resources."
             }
+        },
+        "azureAdUserWithFullSecretAccess": {
+            "type": "string",
+            "metadata": {
+                "description": "MUST CHANGE MANUALLY - NO DEFAULT: Azure AD Id for a user with full access to KeyVault."
+            }
         }
     },
     "variables": {
@@ -102,6 +108,10 @@
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "python"
+                        },
+                        {
+                            "name": "KEY_VAULT_URI",
+                            "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName')), '2019-09-01').vaultUri]"
                         }
                     ]
                 }
@@ -168,7 +178,23 @@
                     "family": "A"
                 },
                 "accessPolicies": [
-
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[parameters('azureAdUserWithFullSecretAccess')]",
+                        "permissions": {
+                            "keys": [ "all" ],
+                            "secrets": [ "all" ],
+                            "certificates": [ "all" ],
+                            "storage": [ "all" ]
+                        }
+                    },
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW').principalId]",
+                        "permissions": {
+                            "secrets": [ "all" ]
+                        }
+                    }
                 ],
                 "networkAcls": {
                     "defaultAction": "Allow",

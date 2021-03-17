@@ -4,12 +4,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-black = "*"
+black = "==20.8b1"
+v = {editable = true,version = "*"}
 
 [packages]
 azure-functions = "*"
+azure-identity = "*"
+azure-keyvault-secrets = "*"
 msal = "*"
+requires = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
