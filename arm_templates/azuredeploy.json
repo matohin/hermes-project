@@ -36,9 +36,8 @@
         "serviceBusNamespaceName": "[concat('sb-', parameters('projectName'))]",
         "keyVaultName": "[concat('kv-', parameters('projectName'))]",
         "defaultSASKeyName": "RootManageSharedAccessKey",
-        "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
-
-
+        "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
+        "keyVaultSecretsOfficerRoleGiud": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
     },
     "resources": [
         {
@@ -177,29 +176,21 @@
                     "name": "standard",
                     "family": "A"
                 },
-                "accessPolicies": [
-                    {
-                        "tenantId": "[subscription().tenantId]",
-                        "objectId": "[parameters('azureAdUserWithFullSecretAccess')]",
-                        "permissions": {
-                            "keys": [ "all" ],
-                            "secrets": [ "all" ],
-                            "certificates": [ "all" ],
-                            "storage": [ "all" ]
-                        }
-                    },
-                    {
-                        "tenantId": "[subscription().tenantId]",
-                        "objectId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW').principalId]",
-                        "permissions": {
-                            "secrets": [ "all" ]
-                        }
-                    }
-                ],
+                "enableRbacAuthorization": true,
+                "enableSoftDelete": false,
                 "networkAcls": {
                     "defaultAction": "Allow",
                     "bypass": "AzureServices"
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2020-04-01-preview",
+            "name": "[guid(resourceGroup().id)]",
+            "properties": {
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
+                "principalId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2018-11-30').principalId]"
             }
         }
     ],
