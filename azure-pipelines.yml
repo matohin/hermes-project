@@ -32,17 +32,17 @@ stages:
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)"
-              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
-              action: "Create Or Update Resource Group"
-              resourceGroupName: "rg-hermes-project-dev-00"
-              location: "North Europe"
-              templateLocation: "Linked artifact"
-              csmFile: "arm_templates/azuredeploy.json"
-              csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
-              deploymentMode: "Complete"
-              overrideParameters: "-functionAppName $(functionAppName)"
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'Azure Pay-As-You-Go'
+              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'rg-hermes-project-dev-00'
+              location: 'North Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'arm_templates/azuredeploy.json'
+              csmParametersFile: 'arm_templates/azuredeploy.parameters.dev-00.json'
+              overrideParameters: '-functionAppName $(functionAppName)'
+              deploymentMode: 'Complete'
 
   - stage: Build
     displayName: Build stage
