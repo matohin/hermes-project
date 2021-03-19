@@ -107,7 +107,7 @@ stages:
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
-                    azureSubscription: "Pay-As-You-Go (1192dbda-03e9-417a-8c81-7487e3525752)"
+                    azureSubscription: 'Azure Pay-As-You-Go'
                     appType: "functionAppLinux"
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
