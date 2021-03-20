@@ -18,12 +18,6 @@
             "metadata": {
                 "description": "Location for all resources."
             }
-        },
-        "azureAdUserWithFullSecretAccess": {
-            "type": "string",
-            "metadata": {
-                "description": "MUST CHANGE MANUALLY - NO DEFAULT: Azure AD Id for a user with full access to KeyVault."
-            }
         }
     },
     "variables": {
@@ -187,6 +181,9 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2020-04-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+            ],
             "name": "[guid(resourceGroup().id)]",
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",

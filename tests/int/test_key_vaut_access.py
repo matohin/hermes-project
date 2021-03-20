@@ -1,8 +1,11 @@
 import os
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
+from secrets import choice
+import string
 
 if not os.getenv("KEY_VAULT_URI"):
+
     os.environ["KEY_VAULT_URI"] = "https://kv-hermes-proj.vault.azure.net/"
 
 
@@ -11,23 +14,18 @@ def test_keyvault_access():
     key_vault_uri = os.environ["KEY_VAULT_URI"]
 
     credential = DefaultAzureCredential()
-    print(credential)
-
     client = SecretClient(vault_url=key_vault_uri, credential=credential)
-    print(client)
 
-    client.set_secret("secretName", "secretValue")
+    random_source = string.ascii_letters + string.digits + string.punctuation
+    test_secret_name = "test-" + "".join(choice(string.digits) for i in range(8))
+    test_secret_value = "".join(choice(random_source) for i in range(20))
 
-    # print(" done.")
+    client.set_secret(test_secret_name, test_secret_value)
+    actual = client.get_secret(test_secret_name)
 
-    # print(f"Retrieving your secret from {keyVaultName}.")
+    assert actual.value == test_secret_value
 
-    # retrieved_secret = client.get_secret(secretName)
+    poller = client.begin_delete_secret(test_secret_name)
+    deleted_secret = poller.result()
 
-    # print(f"Your secret is '{retrieved_secret.value}'.")
-    # print(f"Deleting your secret from {keyVaultName} ...")
-
-    # poller = client.begin_delete_secret(secretName)
-    # deleted_secret = poller.result()
-
-    # print(" done.")
+    assert deleted_secret.id == actual.id
