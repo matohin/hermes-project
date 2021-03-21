@@ -48,8 +48,8 @@ stages:
               resourceGroupName: "rg-hermes-project-dev-00"
               location: "North Europe"
               templateLocation: "Linked artifact"
-              csmFile: "arm_templates/azuredeploy.json"
-              csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
+              csmFile: "az_pipeline_main/azuredeploy.json"
+              csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev-00.json"
               overrideParameters: "-functionAppName $(functionAppName) -inputTelegramFunctionPermanentKey $(inputTelegramFunctionPermanentKey)"
               deploymentMode: "Complete"
 
