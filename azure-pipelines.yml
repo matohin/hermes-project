@@ -47,7 +47,7 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: 'arm_templates/azuredeploy.json'
             csmParametersFile: 'arm_templates/azuredeploy.parameters.dev-00.json'
-            overrideParameters: '-functionAppName $(functionAppName)'
+            overrideParameters: '-functionAppName $(functionAppName) -inputTelegramFunctionPermanentKey $(inputTelegramFunctionPermanentKey)'
             deploymentMode: 'Complete'
 
   - stage: Build
