@@ -18,6 +18,13 @@
             "metadata": {
                 "description": "Location for all resources."
             }
+        },
+        "inputTelegramFunctionPermanentKey": {
+            "type": "string",
+            "defaultValue": "[newGuid()]",
+            "metadata": {
+                "description": "Permanent key for Telegram input function. URI with this key is to be registred in Telegram bot API as callback webhook."
+            }
         }
     },
     "variables": {
@@ -32,6 +39,7 @@
         "defaultSASKeyName": "RootManageSharedAccessKey",
         "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
         "keyVaultSecretsOfficerRoleGiud": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
+
     },
     "resources": [
         {
@@ -188,6 +196,17 @@
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
                 "principalId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2018-11-30').principalId]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions/keys",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+            ],
+            "apiVersion": "2020-06-01",
+            "name": "[concat(variables('functionAppName'), '/input_trunk_telegram/inputTelegramFunctionPermanentKey')]",
+            "properties": {
+                "value": "[parameters('inputTelegramFunctionPermanentKey')]"
             }
         }
     ],
