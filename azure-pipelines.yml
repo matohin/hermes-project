@@ -30,6 +30,12 @@ stages:
           vmImage: $(vmImageName)
 
         steps:
+        - task: AzureKeyVault@1
+          inputs:
+            azureSubscription: 'Azure Pay-As-You-Go'
+            KeyVaultName: 'kv-hermes-proj'
+            SecretsFilter: 'inputTelegramFunctionPermanentKey, telegramBotToken'
+            RunAsPreJob: false
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
             deploymentScope: 'Resource Group'
