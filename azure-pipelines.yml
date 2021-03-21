@@ -4,8 +4,6 @@ trigger:
   - main
 
 variables:
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: "610c71ed-2441-4640-9b27-39af858d0ba4"
 
   # Project name
   projectName: "hermes-proj"
