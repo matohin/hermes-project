@@ -30,12 +30,15 @@ stages:
           vmImage: $(vmImageName)
 
         steps:
-          - task: PowerShell@2
+          - task: AzurePowerShell@5
             inputs:
-              targetType: 'inline'
-              script: |
+              azureSubscription: 'Azure Pay-As-You-Go'
+              ScriptType: 'InlineScript'
+              Inline: |
                 $permanentKeyVault = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $(keyVaultName)
                 if(!$permanentKeyVault){Throw "Permanent resource $(keyVaultName) not found. Please run permanent resources pipeline and consult readme to fill necessary secrets."}
+              FailOnStandardError: true
+              azurePowerShellVersion: 'LatestVersion'
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"
