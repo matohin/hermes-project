@@ -7,6 +7,9 @@ variables:
   # Project name
   projectName: "hermes-proj"
 
+  # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
+  keyVaultName: "hermes-proj-keyvault"
+
   # Function app name
   functionAppName: "func-$(projectName)"
 
@@ -27,6 +30,12 @@ stages:
           vmImage: $(vmImageName)
 
         steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                $permanentKeyVault = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $(keyVaultName)
+                if(!$permanentKeyVault){Throw "Permanent resource $(keyVaultName) not found. Please run permanent resources pipeline and consult readme to fill necessary secrets."}
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"
