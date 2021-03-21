@@ -18,3 +18,4 @@ function Register-TelegramWebhookUrl
     $Response = Invoke-RestMethod -Uri $TelegramApiURL -Method Post -ContentType "application/json" -Body $RequestBody
     Write-Debug -Message "API response: $Response"
 }
+

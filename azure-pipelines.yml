@@ -4,7 +4,6 @@ trigger:
   - main
 
 variables:
-
   # Project name
   projectName: "hermes-proj"
 
@@ -28,31 +27,31 @@ stages:
           vmImage: $(vmImageName)
 
         steps:
-        - task: AzureKeyVault@1
-          inputs:
-            azureSubscription: 'Azure Pay-As-You-Go'
-            KeyVaultName: 'kv-hermes-proj'
-            SecretsFilter: 'inputTelegramFunctionPermanentKey, telegramBotToken'
-            RunAsPreJob: false
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: |
-              Import-Module .\DeploymentHelperFunctions.ps1
-              Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramBotToken)
-        - task: AzureResourceManagerTemplateDeployment@3
-          inputs:
-            deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: 'Azure Pay-As-You-Go'
-            subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
-            action: 'Create Or Update Resource Group'
-            resourceGroupName: 'rg-hermes-project-dev-00'
-            location: 'North Europe'
-            templateLocation: 'Linked artifact'
-            csmFile: 'arm_templates/azuredeploy.json'
-            csmParametersFile: 'arm_templates/azuredeploy.parameters.dev-00.json'
-            overrideParameters: '-functionAppName $(functionAppName) -inputTelegramFunctionPermanentKey $(inputTelegramFunctionPermanentKey)'
-            deploymentMode: 'Complete'
+          - task: AzureKeyVault@1
+            inputs:
+              azureSubscription: "Azure Pay-As-You-Go"
+              KeyVaultName: "kv-hermes-proj"
+              SecretsFilter: "inputTelegramFunctionPermanentKey, telegramBotToken"
+              RunAsPreJob: false
+          - task: PowerShell@2
+            inputs:
+              targetType: "inline"
+              script: |
+                Import-Module .\DeploymentHelperFunctions.ps1
+                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(inputTelegramFunctionPermanentKey)
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Azure Pay-As-You-Go"
+              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "rg-hermes-project-dev-00"
+              location: "North Europe"
+              templateLocation: "Linked artifact"
+              csmFile: "arm_templates/azuredeploy.json"
+              csmParametersFile: "arm_templates/azuredeploy.parameters.dev-00.json"
+              overrideParameters: "-functionAppName $(functionAppName) -inputTelegramFunctionPermanentKey $(inputTelegramFunctionPermanentKey)"
+              deploymentMode: "Complete"
 
   - stage: Build
     displayName: Build stage
@@ -117,9 +116,8 @@ stages:
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
-                    azureSubscription: 'Azure Pay-As-You-Go'
+                    azureSubscription: "Azure Pay-As-You-Go"
                     appType: "functionAppLinux"
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
-
