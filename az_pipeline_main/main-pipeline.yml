@@ -41,7 +41,7 @@ stages:
               ScriptType: "InlineScript"
               Inline: |
                 $permanentKeyVault = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $(keyVaultName)
-                if(!$permanentKeyVault){Throw "Permanent resource $(keyVaultName) not found. Please run permanent resources pipeline and consult readme to fill necessary secrets."}
+                #if(!$permanentKeyVault){Throw "Permanent resource $(keyVaultName) not found. Please run permanent resources pipeline and consult readme to fill necessary secrets."}
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
             inputs:
