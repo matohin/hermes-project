@@ -6,7 +6,7 @@ trigger:
       - "*"
   paths:
     include:
-      - "az_pipeline_main/*"
+      - "az_pipeline_permanent/*"
 
 variables:
   # Project name
