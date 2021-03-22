@@ -34,14 +34,13 @@ stages:
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Azure Hermes Project Permanent Infrastructure'
-              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'hermes-project-permanent'
-              location: 'North Europe'
-              templateLocation: 'Linked artifact'
-              csmFile: 'az_pipeline_permanent/azuredeploy.json'
-              csmParametersFile: 'az_pipeline_permanent/azuredeploy.parameters.json'
-              overrideParameters: '-functionAppName $(functionAppName)'
-              deploymentMode: 'Complete'
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Azure Hermes Project Permanent Infrastructure"
+              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "hermes-project-permanent"
+              location: "North Europe"
+              templateLocation: "Linked artifact"
+              csmFile: "az_pipeline_permanent/azuredeploy.json"
+              csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
+              deploymentMode: "Complete"
