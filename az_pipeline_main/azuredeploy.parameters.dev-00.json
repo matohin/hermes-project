@@ -12,6 +12,9 @@
                 },
                 "secretName": "inputTelegramFunctionPermanentKey"
             }
+        },
+        "environment": {
+            "value": "dev"
         }
     }
 }

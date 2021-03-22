@@ -10,7 +10,12 @@
         "functionAppName": {
             "type": "string",
             "defaultValue": "[concat('func-', parameters('projectName'))]",
-            "metadata": { "description": "Function app name, will be used in resource names" }
+            "metadata": { "description": "Function app name, in a pipeline used for this template and function app code deployment." }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "defaultValue": "[concat('kv-', parameters('projectName'))]",
+            "metadata": { "description": "KeyVault name, name must mutch premanent infrastructure project, inputTelegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment" }
         },
         "location": {
             "type": "string",
@@ -25,17 +30,22 @@
             "metadata": {
                 "description": "Permanent key for Telegram input function. URI with this key is to be registred in Telegram bot API as callback webhook."
             }
+        },
+        "environment": {
+            "type": "string",
+            "metadata": {
+                "description": "Evnvironment production satatus Dev/Prod/etc..."
+            }
         }
     },
     "variables": {
         "projjectNameNoDashes": "[replace(parameters('projectName'), '-', '')]",
-        "tags": { "environment": "dev" },
+        "tags": { "environment": "[parameters('environment')]" },
         "storageAccountName": "[concat('st', variables('projjectNameNoDashes'))]",
         "appServicePlanName": "[concat('plan-', parameters('projectName'))]",
         "functionAppName": "[parameters('functionAppName')]",
         "applicationInsightsName": "[concat('appi-', parameters('projectName'))]",
         "serviceBusNamespaceName": "[concat('sb-', parameters('projectName'))]",
-        "keyVaultName": "[concat('kv-', parameters('projectName'))]",
         "defaultSASKeyName": "RootManageSharedAccessKey",
         "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
         "keyVaultSecretsOfficerRoleGiud": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
@@ -46,18 +56,18 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
             "name": "[variables('storageAccountName')]",
+            "tags": "[variables('tags')]",
             "location": "[parameters('location')]",
             "sku": { "name": "Standard_LRS" },
             "kind": "StorageV2",
-            "tags": "[variables('tags')]",
             "properties": {}
         },
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
             "name": "[variables('appServicePlanName')]",
-            "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
             "kind": "functionapp,linux",
             "sku": {
                 "name": "Y1",
@@ -73,9 +83,9 @@
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
             "name": "[variables('functionAppName')]",
+            "tags": "[variables('tags')]",
             "location": "[parameters('location')]",
             "identity": { "type": "SystemAssigned" },
-            "tags": "[variables('tags')]",
             "kind": "functionapp,linux",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
@@ -112,7 +122,7 @@
                         },
                         {
                             "name": "KEY_VAULT_URI",
-                            "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName')), '2019-09-01').vaultUri]"
+                            "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
                         }
                     ]
                 }
@@ -122,8 +132,8 @@
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02-preview",
             "name": "[variables('applicationInsightsName')]",
-            "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
             "kind": "web",
             "properties": {
                 "ApplicationId": "[variables('applicationInsightsName')]",
@@ -134,8 +144,8 @@
             "type": "Microsoft.ServiceBus/namespaces",
             "apiVersion": "2018-01-01-preview",
             "name": "[variables('serviceBusNamespaceName')]",
-            "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
             "sku": {
                 "name": "Basic",
                 "tier": "Basic"
@@ -169,7 +179,8 @@
         {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2019-09-01",
-            "name": "[variables('keyVaultName')]",
+            "name": "[parameters('keyVaultName')]",
+            "tags": "[variables('tags')]",
             "location": "[parameters('location')]",
             "properties": {
                 "enabledForTemplateDeployment": true,
@@ -189,6 +200,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2020-04-01-preview",
+            "tags": "[variables('tags')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
             ],
@@ -200,11 +212,9 @@
         },
         {
             "type": "Microsoft.Web/sites/functions/keys",
-            "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
-            ],
             "apiVersion": "2020-06-01",
             "name": "[concat(variables('functionAppName'), '/input_trunk_telegram/inputTelegramFunctionPermanentKey')]",
+            "tags": "[variables('tags')]",
             "properties": {
                 "value": "[parameters('inputTelegramFunctionPermanentKey')]"
             }
@@ -233,7 +243,7 @@
         },
         "keyVaultName": {
             "type": "string",
-            "value": "[variables('keyVaultName')]"
+            "value": "[parameters('keyVaultName')]"
         }
     }
 }
