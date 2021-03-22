@@ -10,6 +10,8 @@ function Register-TelegramWebhookUrl
     )
 
     $TelegramApiUrl = "https://api.telegram.org/bot$TelegramBotToken/setWebhook"
+    Write-Debug -Message "API url: $TelegramApiUrl"
+
 
     $WebhookUrl = "https://$FunctionAppName.azurewebsites.net/api/input_trunk_telegram?code=$FunctionKey"
     $RequestBody = (@{url = $WebhookUrl } | ConvertTo-Json)
