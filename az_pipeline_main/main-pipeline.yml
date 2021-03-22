@@ -1,7 +1,12 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 trigger:
-  - main
+  branches:
+    include:
+      - "*"
+  paths:
+    exclude:
+      - "az_pipeline_main/*"
 
 variables:
   # Project name
@@ -32,13 +37,13 @@ stages:
         steps:
           - task: AzurePowerShell@5
             inputs:
-              azureSubscription: 'Azure Pay-As-You-Go'
-              ScriptType: 'InlineScript'
+              azureSubscription: "Azure Pay-As-You-Go"
+              ScriptType: "InlineScript"
               Inline: |
                 $permanentKeyVault = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $(keyVaultName)
                 if(!$permanentKeyVault){Throw "Permanent resource $(keyVaultName) not found. Please run permanent resources pipeline and consult readme to fill necessary secrets."}
               FailOnStandardError: true
-              azurePowerShellVersion: 'LatestVersion'
+              azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"

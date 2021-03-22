@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "projectName": {
+            "value": "hermes-proj"
+        },
+        "inputTelegramFunctionPermanentKey": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/1192dbda-03e9-417a-8c81-7487e3525752/resourceGroups/rg-hermes-project-dev-00/providers/Microsoft.KeyVault/vaults/kv-hermes-proj"
+                },
+                "secretName": "inputTelegramFunctionPermanentKey"
+            }
+        },
+        "environment": {
+            "value": "dev"
+        }
+    }
+}

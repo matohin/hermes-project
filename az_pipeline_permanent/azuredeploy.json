@@ -1,0 +1,55 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "projectName": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": { "description": "Project name, will be used in resource names" }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "defaultValue": "[concat('kv-', parameters('projectName'))]",
+            "metadata": { "description": "KeyVault name, name must mutch premanent infrastructure project, inputTelegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment" }
+        },
+        "environment": {
+            "type": "string",
+            "metadata": {
+                "description": "Evnvironment production satatus Dev/Prod/etc..."
+            }
+        }
+    },
+    "variables": {
+        "tags": { "environment": "[parameters('environment')]" }
+    },
+    "resources": [
+
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('keyVaultName')]",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "enabledForTemplateDeployment": true,
+                "tenantId": "[subscription().tenantId]",
+                "sku": {
+                    "name": "standard",
+                    "family": "A"
+                },
+                "enableRbacAuthorization": true,
+                "enableSoftDelete": false,
+                "networkAcls": {
+                    "defaultAction": "Allow",
+                    "bypass": "AzureServices"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "keyVaultName": {
+            "type": "string",
+            "value": "[parameters('keyVaultName')]"
+        }
+    }
+}
