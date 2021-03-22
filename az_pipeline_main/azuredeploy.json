@@ -177,27 +177,6 @@
             ]
         },
         {
-            "type": "Microsoft.KeyVault/vaults",
-            "apiVersion": "2019-09-01",
-            "name": "[parameters('keyVaultName')]",
-            "tags": "[variables('tags')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "enabledForTemplateDeployment": true,
-                "tenantId": "[subscription().tenantId]",
-                "sku": {
-                    "name": "standard",
-                    "family": "A"
-                },
-                "enableRbacAuthorization": true,
-                "enableSoftDelete": false,
-                "networkAcls": {
-                    "defaultAction": "Allow",
-                    "bypass": "AzureServices"
-                }
-            }
-        },
-        {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2020-04-01-preview",
             "tags": "[variables('tags')]",
