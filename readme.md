@@ -9,20 +9,20 @@ This project uses RBAC permissions model and creates role assignment to give fun
 Find Azure DevOps service principle:
 
 ``` Powershell
-Get-AzADServicePrincipal -DisplayName <azure DevOps organization name>*
+$PiplineServicePrincipal = Get-AzADServicePrincipal -ApplicationId <application ID of connection SP> # Id can be looked up at connection settings
+$PermanentInfrastructureResourceGroup = Get-AzResourceGroup -Name <resource group name>
 ```
 
 Assign a role:
 
 ``` Powershell
-New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName <Azure DevOps service connection principle name>).Id -RoleDefinitionId (Get-AzRoleDefinition -Name "User Access Administrator").Id -Scope (Get-AzResourceGroup -Name <resource group name>).ResourceId
+New-AzRoleAssignment -ObjectId $PiplineServicePrincipal.Id -RoleDefinitionId (Get-AzRoleDefinition -Name "User Access Administrator").Id -Scope $PermanentInfrastructureResourceGroup.ResourceId
 ```
 
 Connection identity also uses secrets at trploy time, so it will need a respective role.
 
 ``` Powershell
-New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName <Azure DevOps service connection principle name>).Id -RoleDefinitionId (Get-AzRoleDefinition -Name "Key Vault Secrets User").Id -Scope (Get-AzResourceGroup -Name <resource group name>).ResourceId
-Key Vault Secrets User
+New-AzRoleAssignment -ObjectId $PiplineServicePrincipal.Id -RoleDefinitionId (Get-AzRoleDefinition -Name "Key Vault Secrets User").Id -Scope $PermanentInfrastructureResourceGroup.ResourceId
 ```
 
 ## Adding secrets to the KeyVault
