@@ -54,7 +54,7 @@ stages:
               targetType: "inline"
               script: |
                 Import-Module .\DeploymentHelperFunctions.ps1
-                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(inputTelegramFunctionPermanentKey)
+                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(inputTelegramFunctionPermanentKey) -Debug
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: "Resource Group"
