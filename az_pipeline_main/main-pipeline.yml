@@ -37,7 +37,7 @@ stages:
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"
               KeyVaultName: "kv-hermes-proj"
-              SecretsFilter: "inputTelegramFunctionPermanentKey, telegramBotToken"
+              SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
@@ -49,8 +49,8 @@ stages:
               location: "North Europe"
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
-              csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev-00.json"
-              overrideParameters: "-functionAppName $(functionAppName) -inputTelegramFunctionPermanentKey $(inputTelegramFunctionPermanentKey)"
+              csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev.json"
+              overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)"
               deploymentMode: "Complete"
 
   - stage: Build
@@ -117,11 +117,11 @@ stages:
                   inputs:
                     azureSubscription: "Azure Pay-As-You-Go"
                     KeyVaultName: "kv-hermes-proj"
-                    SecretsFilter: "inputTelegramFunctionPermanentKey, telegramBotToken"
+                    SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
                     RunAsPreJob: false
                 - task: PowerShell@2
                   inputs:
                     targetType: "inline"
                     script: |
                       Import-Module .\DeploymentHelperFunctions.ps1
-                      Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(inputTelegramFunctionPermanentKey)
+                      Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)

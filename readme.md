@@ -43,5 +43,7 @@ Get-AzSubscription
 Get-AzResourceGroup
 Get-AzRoleDefinition | Where-Object{$_.name -like "*search_for_roles*"}
 
-New-AzRoleAssignment -Scope /subscriptions/<subscription/rg/resource id> -RoleDefinitionId <role id>  -ObjectId <user/app id>
+New-AzRoleAssignment -Scope <keyvault resource id> -RoleDefinitionId <role id>  -ObjectId <user/app id>
+
+New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName func-hermes-proj).Id -RoleDefinitionName 'Key Vault Secrets Officer' -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName "kv-hermes-proj").ResourceId
 ```

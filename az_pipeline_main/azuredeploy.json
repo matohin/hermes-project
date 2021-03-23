@@ -15,7 +15,7 @@
         "keyVaultName": {
             "type": "string",
             "defaultValue": "[concat('kv-', parameters('projectName'))]",
-            "metadata": { "description": "KeyVault name, name must mutch premanent infrastructure project, inputTelegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment" }
+            "metadata": { "description": "KeyVault name, name must mutch premanent infrastructure project, telegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment" }
         },
         "location": {
             "type": "string",
@@ -24,7 +24,7 @@
                 "description": "Location for all resources."
             }
         },
-        "inputTelegramFunctionPermanentKey": {
+        "telegramFunctionPermanentKey": {
             "type": "string",
             "defaultValue": "[newGuid()]",
             "metadata": {
@@ -35,6 +35,12 @@
             "type": "string",
             "metadata": {
                 "description": "Evnvironment production satatus Dev/Prod/etc..."
+            }
+        },
+        "permanentResourceGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource group with pemanent resources."
             }
         }
     },
@@ -49,7 +55,6 @@
         "defaultSASKeyName": "RootManageSharedAccessKey",
         "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
         "keyVaultSecretsOfficerRoleGiud": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
-
     },
     "resources": [
         {
@@ -122,10 +127,18 @@
                         },
                         {
                             "name": "KEY_VAULT_URI",
-                            "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
+                            "value": "[reference(resourceId(parameters('permanentResourceGroupName'),'Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
                         }
                     ]
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/host/functionKeys",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('functionAppName'), '/default/telegramFunctionPermanentKey')]",
+            "properties": {
+                "value": "[parameters('telegramFunctionPermanentKey')]"
             }
         },
         {
@@ -175,29 +188,8 @@
                     }
                 }
             ]
-        },
-        {
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2020-04-01-preview",
-            "tags": "[variables('tags')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
-            ],
-            "name": "[guid(resourceGroup().id)]",
-            "properties": {
-                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
-                "principalId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2018-11-30').principalId]"
-            }
-        },
-        {
-            "type": "Microsoft.Web/sites/functions/keys",
-            "apiVersion": "2020-06-01",
-            "name": "[concat(variables('functionAppName'), '/input_trunk_telegram/inputTelegramFunctionPermanentKey')]",
-            "tags": "[variables('tags')]",
-            "properties": {
-                "value": "[parameters('inputTelegramFunctionPermanentKey')]"
-            }
         }
+
     ],
     "outputs": {
         "storageAccountName": {

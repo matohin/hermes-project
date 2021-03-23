@@ -5,12 +5,16 @@
         "projectName": {
             "type": "string",
             "defaultValue": "[resourceGroup().name]",
-            "metadata": { "description": "Project name, will be used in resource names" }
+            "metadata": {
+                "description": "Project name, will be used in resource names"
+            }
         },
         "keyVaultName": {
             "type": "string",
             "defaultValue": "[concat('kv-', parameters('projectName'))]",
-            "metadata": { "description": "KeyVault name, name must mutch premanent infrastructure project, inputTelegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment" }
+            "metadata": {
+                "description": "KeyVault name, name must mutch premanent infrastructure project, telegramFunctionPermanentKey and telegramBotToken secrets must exist prior to this deployment"
+            }
         },
         "environment": {
             "type": "string",
@@ -27,10 +31,11 @@
         }
     },
     "variables": {
-        "tags": { "environment": "[parameters('environment')]" }
+        "tags": {
+            "environment": "[parameters('environment')]"
+        }
     },
     "resources": [
-
         {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2019-09-01",

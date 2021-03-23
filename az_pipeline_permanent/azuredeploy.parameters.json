@@ -7,6 +7,8 @@
         },
         "environment": {
             "value": "prod"
+        },
+        "keyVaultName": {
+            "value": "hermes-proj-keyvault"
         }
-    }
 }
