@@ -35,32 +35,32 @@ stages:
         steps:
           - task: AzureKeyVault@1
             inputs:
-              azureSubscription: "Azure Pay-As-You-Go"
-              KeyVaultName: $(keyVaultName)
-              SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
+              azureSubscription: 'Azure Hermes Project Permanent Infrastructure'
+              KeyVaultName: '$(keyVaultName)'
+              SecretsFilter: 'telegramFunctionPermanentKey, telegramBotToken'
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Pay-As-You-Go"
-              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
-              action: "Create Or Update Resource Group"
-              resourceGroupName: "rg-hermes-project-dev-00"
-              location: "North Europe"
-              templateLocation: "Linked artifact"
-              csmFile: "az_pipeline_main/azuredeploy.json"
-              csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev.json"
-              overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)"
-              deploymentMode: "Complete"
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'Azure Hermes Project Dev'
+              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'rg-hermes-project-dev-00'
+              location: 'North Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'az_pipeline_main/azuredeploy.json'
+              csmParametersFile: 'az_pipeline_main/azuredeploy.parameters.dev.json'
+              overrideParameters: '-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)'
+              deploymentMode: 'Complete'
           - task: AzurePowerShell@5
             inputs:
-              azureSubscription: "Azure Pay-As-You-Go"
-              ScriptType: "InlineScript"
+              azureSubscription: 'Azure Hermes Project Dev'
+              ScriptType: 'InlineScript'
               Inline: |
                 # New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName $(functionAppName)).Id -RoleDefinitionName "Key Vault Secrets Officer" -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName $(keyVaultName)).ResourceId
                 Get-AzADServicePrincipal
               FailOnStandardError: true
-              azurePowerShellVersion: "LatestVersion"
+              azurePowerShellVersion: 'LatestVersion'
           - task: PowerShell@2
             inputs:
               targetType: "inline"
