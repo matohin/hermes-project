@@ -24,15 +24,23 @@ variables:
   # Working Directory
   workingDirectory: "$(System.DefaultWorkingDirectory)/"
 
+
+
 stages:
   - stage: Provision
     displayName: Provision Azure resources from ARM template
     jobs:
+
       - job: DeployARM
         displayName: Deploy ARM template
         pool:
           vmImage: $(vmImageName)
         steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "Hello World"
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"
