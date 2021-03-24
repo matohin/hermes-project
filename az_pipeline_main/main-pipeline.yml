@@ -13,7 +13,7 @@ variables:
   projectName: "hermes-proj"
 
   # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
-  keyVaultName: "kv-hermes-proj"
+  keyVaultName: "hermes-proj-keyvault"
 
   # Function app name
   functionAppName: "func-$(projectName)"
