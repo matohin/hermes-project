@@ -35,7 +35,7 @@ stages:
         steps:
           - task: AzureKeyVault@1
             inputs:
-              azureSubscription: 'Azure Hermes Project Permanent Infrastructure'
+              azureSubscription: 'Azure Hermes Project Dev'
               KeyVaultName: '$(keyVaultName)'
               SecretsFilter: 'telegramFunctionPermanentKey, telegramBotToken'
               RunAsPreJob: false
