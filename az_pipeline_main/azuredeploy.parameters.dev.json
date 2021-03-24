@@ -18,6 +18,9 @@
         },
         "permanentResourceGroupName": {
             "value": "hermes-project-permanent"
+        },
+        "keyVaultName": {
+            "value": "hermes-proj-keyvault"
         }
     }
 }
