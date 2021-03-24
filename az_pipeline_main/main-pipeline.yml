@@ -36,7 +36,7 @@ stages:
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Pay-As-You-Go"
-              KeyVaultName: "kv-hermes-proj"
+              KeyVaultName: $(keyVaultName)
               SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
@@ -116,7 +116,7 @@ stages:
                 - task: AzureKeyVault@1
                   inputs:
                     azureSubscription: "Azure Pay-As-You-Go"
-                    KeyVaultName: "kv-hermes-proj"
+                    KeyVaultName: $(keyVaultName)
                     SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
                     RunAsPreJob: false
                 - task: PowerShell@2
