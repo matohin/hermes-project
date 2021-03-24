@@ -125,4 +125,4 @@ stages:
                     script: |
                       # Import-Module .\DeploymentHelperFunctions.ps1
                       # Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
-                      ls
+                      ls | Write-Host
