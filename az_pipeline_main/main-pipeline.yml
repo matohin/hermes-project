@@ -123,8 +123,8 @@ stages:
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
-                    azureSubscription: "Azure Pay-As-You-Go"
-                    appType: "functionAppLinux"
-                    appName: "$(functionAppName)"
-                    package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
-                    runtimeStack: "PYTHON|3.7"
+                    azureSubscription: 'Azure Hermes Project Dev'
+                    appType: 'functionAppLinux'
+                    appName: '$(functionAppName)'
+                    package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+                    runtimeStack: 'PYTHON|3.7'
