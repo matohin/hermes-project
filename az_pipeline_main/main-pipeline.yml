@@ -54,12 +54,13 @@ stages:
               deploymentMode: "Complete"
           - task: AzurePowerShell@5
             inputs:
-              azureSubscription: 'Azure Pay-As-You-Go'
-              ScriptType: 'InlineScript'
+              azureSubscription: "Azure Pay-As-You-Go"
+              ScriptType: "InlineScript"
               Inline: |
-                New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName $(functionAppName)).Id -RoleDefinitionName "Key Vault Secrets Officer" -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName $(keyVaultName)).ResourceId
+                # New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName $(functionAppName)).Id -RoleDefinitionName "Key Vault Secrets Officer" -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName $(keyVaultName)).ResourceId
+                Get-AzADServicePrincipal
               FailOnStandardError: true
-              azurePowerShellVersion: 'LatestVersion'
+              azurePowerShellVersion: "LatestVersion"
           - task: PowerShell@2
             inputs:
               targetType: "inline"
