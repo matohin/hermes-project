@@ -123,6 +123,6 @@ stages:
                   inputs:
                     targetType: "inline"
                     script: |
-                      # Import-Module .\DeploymentHelperFunctions.ps1
-                      # Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
+                      Import-Module .\DeploymentHelperFunctions.ps1
+                      Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
                       ls | Write-Host
