@@ -52,6 +52,14 @@ stages:
               csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev.json"
               overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)"
               deploymentMode: "Complete"
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure Pay-As-You-Go'
+              ScriptType: 'InlineScript'
+              Inline: |
+                New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName $(functionAppName)).Id -RoleDefinitionName "Key Vault Secrets Officer" -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName $(keyVaultName)).ResourceId
+              FailOnStandardError: true
+              azurePowerShellVersion: 'LatestVersion'
           - task: PowerShell@2
             inputs:
               targetType: "inline"
