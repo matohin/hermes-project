@@ -35,32 +35,23 @@ stages:
         steps:
           - task: AzureKeyVault@1
             inputs:
-              azureSubscription: 'Azure Hermes Project Dev'
-              KeyVaultName: '$(keyVaultName)'
-              SecretsFilter: 'telegramFunctionPermanentKey, telegramBotToken'
+              azureSubscription: "Azure Hermes Project Dev"
+              KeyVaultName: "$(keyVaultName)"
+              SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Azure Hermes Project Dev'
-              subscriptionId: '1192dbda-03e9-417a-8c81-7487e3525752'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'rg-hermes-project-dev-00'
-              location: 'North Europe'
-              templateLocation: 'Linked artifact'
-              csmFile: 'az_pipeline_main/azuredeploy.json'
-              csmParametersFile: 'az_pipeline_main/azuredeploy.parameters.dev.json'
-              overrideParameters: '-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)'
-              deploymentMode: 'Complete'
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure Hermes Project Dev'
-              ScriptType: 'InlineScript'
-              Inline: |
-                # New-AzRoleAssignment -ObjectId (Get-AzADServicePrincipal -DisplayName $(functionAppName)).Id -RoleDefinitionName "Key Vault Secrets Officer" -Scope (Get-AzResource -ResourceType "Microsoft.KeyVault/vaults" -ResourceName $(keyVaultName)).ResourceId
-                Get-AzADServicePrincipal
-              FailOnStandardError: true
-              azurePowerShellVersion: 'LatestVersion'
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Azure Hermes Project Dev"
+              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "rg-hermes-project-dev-00"
+              location: "North Europe"
+              templateLocation: "Linked artifact"
+              csmFile: "az_pipeline_main/azuredeploy.json"
+              csmParametersFile: "az_pipeline_main/azuredeploy.parameters.dev.json"
+              overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)"
+              deploymentMode: "Complete"
           - task: PowerShell@2
             inputs:
               targetType: "inline"
@@ -123,8 +114,8 @@ stages:
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
-                    azureSubscription: 'Azure Hermes Project Dev'
-                    appType: 'functionAppLinux'
-                    appName: '$(functionAppName)'
-                    package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-                    runtimeStack: 'PYTHON|3.7'
+                    azureSubscription: "Azure Hermes Project Dev"
+                    appType: "functionAppLinux"
+                    appName: "$(functionAppName)"
+                    package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
+                    runtimeStack: "PYTHON|3.7"
