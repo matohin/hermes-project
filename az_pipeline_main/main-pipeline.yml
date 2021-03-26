@@ -21,8 +21,6 @@ variables:
   # Environment production status - dev/prod/etc
   environment: "dev"
 
-  functionAppIdentity: "abc"
-
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
 
@@ -37,6 +35,9 @@ stages:
         displayName: Provisioning
         pool:
           vmImage: $(vmImageName)
+        variables:
+          - name: functionAppIdentity
+            value: abc
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
