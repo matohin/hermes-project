@@ -18,6 +18,9 @@ variables:
   # Function app name
   functionAppName: "func-$(projectName)"
 
+  # Environment production status - dev/prod/etc
+  environment: "dev"
+
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
 
