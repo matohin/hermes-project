@@ -32,16 +32,11 @@ function Test-KeyVaultReadines
         $MandatorySecretsList
     )
 
-    try
-    {
+    $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name hermes-proj-keyvault
+    if (!$KeyVaultObject){Throw "KeyVault is not deployed, it should exist prior to main pipeline deployment"}
 
-    }
-    catch
-    {
-
-    }
-    finally
-    {
-
+    foreach ($SecrenName in $MandatorySecretsList) {
+        $CurrentSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $SecrenName
+        if (!$KeyVaultObject){Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline."}
     }
 }
