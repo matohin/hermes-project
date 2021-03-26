@@ -4,7 +4,6 @@
     "parameters": {
         "projectName": {
             "type": "string",
-            "defaultValue": "[resourceGroup().name]",
             "metadata": { "description": "Project name, will be used in resource names" }
         },
         "functionAppName": {
@@ -25,7 +24,6 @@
         },
         "telegramFunctionPermanentKey": {
             "type": "string",
-            "defaultValue": "[newGuid()]",
             "metadata": {
                 "description": "Permanent key for Telegram input function. URI with this key is to be registred in Telegram bot API as callback webhook."
             }
