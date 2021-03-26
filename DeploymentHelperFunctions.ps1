@@ -38,6 +38,6 @@ function Test-KeyVaultReadiness
     foreach ($SecrenName in $MandatorySecretsList)
     {
         $CurrentSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $SecrenName
-        if (!$KeyVaultObject) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
+        if (!$CurrentSecret) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
     }
 }

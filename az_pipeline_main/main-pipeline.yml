@@ -56,6 +56,7 @@ stages:
               Inline: |
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
+                Write-Host "##vso[task.setvariable variable=functionAppIdentity;isOutput=true]123"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
