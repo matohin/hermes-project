@@ -36,8 +36,7 @@ stages:
         pool:
           vmImage: $(vmImageName)
         variables:
-          - name: functionAppIdentity
-            value: abc
+          functionAppIdentity: abc
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
