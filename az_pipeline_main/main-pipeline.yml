@@ -62,8 +62,8 @@ stages:
                 $env:functionAppIdentity = $FunctionAppIdentityPrincipalId
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
-              env:
-                functionAppIdentity: $(functionAppIdentity)
+            env:
+              functionAppIdentity: $(functionAppIdentity)
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
