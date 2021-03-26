@@ -32,7 +32,7 @@ stages:
     displayName: Provision Azure resources from ARM template
     jobs:
       - job: Provisioning
-        displayName: Deploy ARM template
+        displayName: Provisioning
         pool:
           vmImage: $(vmImageName)
         steps:
@@ -57,7 +57,8 @@ stages:
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
                 $FunctionAppIdentityPrincipalId = (Get-AzFunctionApp | Where-Object{$_.Name -eq 'func-hermes-proj'}).IdentityPrincipalId
-                Write-Host "##vso[task.setvariable variable=functionAppIdentity;isOutput=true]$FunctionAppIdentityPrincipalId"
+                Write-Host $FunctionAppIdentityPrincipalId
+                Write-Host "##vso[task.setvariable variable=functionAppIdentity;isOutput=true]0622b370-7c36-4fa9-af4e-b30e475b38a9"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
