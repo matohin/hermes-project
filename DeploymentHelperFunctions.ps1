@@ -21,3 +21,27 @@ function Register-TelegramWebhookUrl
     Write-Debug -Message "API response: $Response"
 }
 
+function Test-KeyVaultReadines
+{
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]
+        $KeyVaultName,
+        [Parameter(Mandatory = $true)]
+        [string[]]
+        $MandatorySecretsList
+    )
+
+    try
+    {
+
+    }
+    catch
+    {
+
+    }
+    finally
+    {
+
+    }
+}
