@@ -21,6 +21,8 @@ variables:
   # Environment production status - dev/prod/etc
   environment: "dev"
 
+  functionAppIdentity: "abc"
+
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
 
@@ -57,10 +59,11 @@ stages:
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
                 $FunctionAppIdentityPrincipalId = (Get-AzFunctionApp | Where-Object{$_.Name -eq 'func-hermes-proj'}).IdentityPrincipalId
-                Write-Host $FunctionAppIdentityPrincipalId
-                Write-Host "##vso[task.setvariable variable=functionAppIdentity;isOutput=true]0622b370-7c36-4fa9-af4e-b30e475b38a9"
+                $env:functionAppIdentity = $FunctionAppIdentityPrincipalId
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
+              env:
+                functionAppIdentity: $(functionAppIdentity)
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
