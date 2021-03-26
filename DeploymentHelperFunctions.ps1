@@ -21,7 +21,7 @@ function Register-TelegramWebhookUrl
     Write-Debug -Message "API response: $Response"
 }
 
-function Test-KeyVaultReadines
+function Test-KeyVaultReadiness
 {
     param (
         [Parameter(Mandatory = $true)]
@@ -33,10 +33,11 @@ function Test-KeyVaultReadines
     )
 
     $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name hermes-proj-keyvault
-    if (!$KeyVaultObject){Throw "KeyVault is not deployed, it should exist prior to main pipeline deployment"}
+    if (!$KeyVaultObject) { Throw "KeyVault is not deployed, it should exist prior to main pipeline deployment" }
 
-    foreach ($SecrenName in $MandatorySecretsList) {
+    foreach ($SecrenName in $MandatorySecretsList)
+    {
         $CurrentSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $SecrenName
-        if (!$KeyVaultObject){Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline."}
+        if (!$KeyVaultObject) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
     }
 }

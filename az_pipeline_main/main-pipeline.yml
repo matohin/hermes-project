@@ -49,6 +49,15 @@ stages:
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
               overrideParameters: "-keyVaultName $(keyVaultName)"
               deploymentMode: "Incremental"
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: "Azure Hermes Project Dev"
+              ScriptType: "InlineScript"
+              Inline: |
+                Import-Module .\DeploymentHelperFunctions.ps1
+                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
+              FailOnStandardError: true
+              azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
