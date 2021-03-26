@@ -62,7 +62,7 @@ stages:
               location: "North Europe"
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
-              overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey)"
+              overrideParameters: "-functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName)"
               deploymentMode: "Incremental"
           - task: PowerShell@2
             inputs:
