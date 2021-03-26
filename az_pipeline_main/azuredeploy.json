@@ -35,12 +35,6 @@
             "metadata": {
                 "description": "Evnvironment production satatus Dev/Prod/etc..."
             }
-        },
-        "permanentResourceGroupName": {
-            "type": "string",
-            "metadata": {
-                "description": "Resource group with pemanent resources."
-            }
         }
     },
     "variables": {
@@ -126,7 +120,7 @@
                         },
                         {
                             "name": "KEY_VAULT_URI",
-                            "value": "[reference(resourceId(parameters('permanentResourceGroupName'),'Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
+                            "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
                         }
                     ]
                 }

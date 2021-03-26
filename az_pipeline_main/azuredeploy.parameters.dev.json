@@ -6,13 +6,15 @@
             "value": "hermes-proj"
         },
         "telegramFunctionPermanentKey": {
-            "value": "aaabbbccc"
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/1192dbda-03e9-417a-8c81-7487e3525752/resourceGroups/rg-hermes-project-dev-00/providers/Microsoft.KeyVault/vaults/hermes-proj-keyvault"
+                },
+                "secretName": "telegramFunctionPermanentKey"
+            }
         },
         "environment": {
             "value": "dev"
-        },
-        "permanentResourceGroupName": {
-            "value": "hermes-project-permanent"
         },
         "keyVaultName": {
             "value": "hermes-proj-keyvault"
