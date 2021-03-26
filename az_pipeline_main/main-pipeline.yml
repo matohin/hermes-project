@@ -21,6 +21,8 @@ variables:
   # Environment production status - dev/prod/etc
   environment: "dev"
 
+  functionAppIdentity: "aaa"
+
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
 
