@@ -1,6 +1,16 @@
 # Notes
 
-Hermes project first prototype
+Hermes project first prototype - connecting resources from personal Microsof account (Miscrosoft Graph) with Telegram bot.
+
+Core technologies:
+
+- Azure Functions
+- Azure Service Bus
+- Azure Key Vult
+- Application Insights
+- Python / pipenv / pytest
+
+Just for fun/learning purposes, but real/working solution.
 
 ## Give pipeline premissions to deploy role assignment
 
@@ -32,6 +42,12 @@ $vaultName = 'kv-hermes-proj'
 Set-AzKeyVaultSecret -VaultName $vaultName -SecretName "secretName" -SecretValue (ConvertTo-SecureString -String 'secretValuexxxyyyzzz' -AsPlainText -Force)
 ```
 
+## Role assignment re-creation
+
+Every time Function App is deleted, "Key Vault Secrets Officer" role assignment on resource group for system managed identity of the app should be removed manually to avoid conflict on new role assignment.
+
+TODO: Switch to user assigned Function App identity to mitigate this issue.
+
 ## Just useful Commands
 
 pipenv lock -r > .\requirements.txt
@@ -39,8 +55,6 @@ pipenv lock -r > .\requirements.txt
 ``` Powershell
 gc .\.gitignore > .\.funcignore
 
-Get-AzSubscription
-Get-AzResourceGroup
 Get-AzRoleDefinition | Where-Object{$_.name -like "*search_for_roles*"}
 
 New-AzRoleAssignment -Scope <keyvault resource id> -RoleDefinitionId <role id>  -ObjectId <user/app id>
