@@ -53,7 +53,7 @@ stages:
               subscriptionId: $(azureResourceManagerConnection)
               location: "North Europe"
               action: "Create Or Update Resource Group"
-              resourceGroupName: $(rg-hermes-project-dev-00)
+              resourceGroupName: $(resourceGroupName)
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_permanent/azuredeploy.json"
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
@@ -82,7 +82,7 @@ stages:
               subscriptionId: $(azureResourceManagerConnection)
               location: "North Europe"
               action: "Create Or Update Resource Group"
-              resourceGroupName: $(rg-hermes-project-dev-00)
+              resourceGroupName: $(resourceGroupName)
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
               overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment)"
