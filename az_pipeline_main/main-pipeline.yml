@@ -50,7 +50,7 @@ stages:
             inputs:
               deploymentScope: "Resource Group"
               azureResourceManagerConnection: $(azureResourceManagerConnection)
-              subscriptionId: $(azureResourceManagerConnection)
+              subscriptionId: $(subscriptionId)
               location: "North Europe"
               action: "Create Or Update Resource Group"
               resourceGroupName: $(resourceGroupName)
@@ -79,7 +79,7 @@ stages:
             inputs:
               deploymentScope: "Resource Group"
               azureResourceManagerConnection: $(azureResourceManagerConnection)
-              subscriptionId: $(azureResourceManagerConnection)
+              subscriptionId: $(subscriptionId)
               location: "North Europe"
               action: "Create Or Update Resource Group"
               resourceGroupName: $(resourceGroupName)
