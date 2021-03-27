@@ -64,6 +64,16 @@ stages:
               azurePowerShellVersion: "LatestVersion"
             env:
               functionAppIdentity: $(functionAppIdentity)
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: "Azure Hermes Project Dev"
+              ScriptType: "InlineScript"
+              Inline: |
+                "##[warning]$env:functionAppIdentity"
+              FailOnStandardError: true
+              azurePowerShellVersion: "LatestVersion"
+            env:
+              functionAppIdentity: $(functionAppIdentity)
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
