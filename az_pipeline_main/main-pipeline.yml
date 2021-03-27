@@ -19,16 +19,16 @@ variables:
   functionAppName: "func-$(projectName)"
 
   # Environment production status - dev/prod/etc
-  environment: "dev"
+  environment: dev
 
   # Subscription ID for target resource group
-  subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+  subscriptionId: 1192dbda-03e9-417a-8c81-7487e3525752
 
   # Service connection Name for target resource group
-  azureResourceManagerConnection: "Azure Hermes Project Dev"
+  azureResourceManagerConnection: Azure Hermes Project Dev
 
   # Name of a target resource group for all resources
-  resourceGroupName: "rg-hermes-project-dev-00"
+  resourceGroupName: rg-hermes-project-dev-00
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
@@ -49,11 +49,11 @@ stages:
             displayName: Deploying permanant / stateful resources
             inputs:
               deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "$(azureResourceManagerConnection)"
-              subscriptionId: "$(azureResourceManagerConnection)"
+              azureResourceManagerConnection: $(azureResourceManagerConnection)
+              subscriptionId: $(azureResourceManagerConnection)
               location: "North Europe"
               action: "Create Or Update Resource Group"
-              resourceGroupName: "$(rg-hermes-project-dev-00)"
+              resourceGroupName: $(rg-hermes-project-dev-00)
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_permanent/azuredeploy.json"
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
@@ -78,11 +78,11 @@ stages:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "$(azureResourceManagerConnection)"
-              subscriptionId: "$(azureResourceManagerConnection)"
+              azureResourceManagerConnection: $(azureResourceManagerConnection)
+              subscriptionId: $(azureResourceManagerConnection)
               location: "North Europe"
               action: "Create Or Update Resource Group"
-              resourceGroupName: "$(rg-hermes-project-dev-00)"
+              resourceGroupName: $(rg-hermes-project-dev-00)
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
               overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment)"
