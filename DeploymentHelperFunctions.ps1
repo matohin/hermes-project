@@ -39,32 +39,3 @@ function Test-KeyVaultReadiness
         if (!$CurrentSecret) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
     }
 }
-
-function Clear-ManagedIdentityRoleAssignment
-{
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$FunctionAppName,
-        [Parameter(Mandatory = $true)]
-        [string]$ResourceGroupName,
-        [Parameter(Mandatory = $true)]
-        [string]$AssignmentDefinitionMarker
-    )
-
-    $FunctionApp = Get-AzFunctionApp -Name $FunctionAppName -ResourceGroupName $ResourceGroupName
-    Write-Debug -Message "Function App object $FunctionApp"
-    $ManagedIdentityRoleAssignment = Get-AzRoleAssignment -ResourceGroupName $ResourceGroupName | Where-Object { $_.Description -eq $AssignmentDefinitionMarker }
-    Write-Debug -Message "Role Assignment object $ManagedIdentityRoleAssignment"
-
-    if (!$FunctionApp -and $ManagedIdentityRoleAssignment)
-    {
-        $ManagedIdentityRoleAssignment | Remove-AzRoleAssignment
-        Write-Debug -Message "Function App not found, removing $ManagedIdentityRoleAssignment"
-    }
-
-    elseif ($ManagedIdentityRoleAssignment -and ($FunctionApp.IdentityPrincipalId -ne $ManagedIdentityRoleAssignment.ObjectId))
-    {
-        $ManagedIdentityRoleAssignment | Remove-AzRoleAssignment
-        Write-Debug -Message "Principal mismatch found in assignment with a known description marker, removing $ManagedIdentityRoleAssignment"
-    }
-}

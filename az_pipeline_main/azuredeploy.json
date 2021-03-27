@@ -33,12 +33,6 @@
             "metadata": {
                 "description": "Evnvironment production satatus Dev/Prod/etc..."
             }
-        },
-        "assignmentDefinitionMarker": {
-            "type": "string",
-            "metadata": {
-                "description": "Added to a description of role assignment. Used to track assignment and keep deployment idempotency."
-            }
         }
     },
     "variables": {
@@ -197,7 +191,7 @@
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
                 "principalId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2018-11-30').principalId]",
-                "description": "[parameters('assignmentDefinitionMarker')]"
+                "description": "ARM Managed"
             }
         }
     ],

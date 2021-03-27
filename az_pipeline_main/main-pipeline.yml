@@ -21,11 +21,14 @@ variables:
   # Environment production status - dev/prod/etc
   environment: "dev"
 
+  # Subscription ID for target resource group
+  subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+
+  # Service connection Name for target resource group
+  azureResourceManagerConnection: "Azure Hermes Project Dev"
+
   # Name of a target resource group for all resources
   resourceGroupName: "rg-hermes-project-dev-00"
-
-  # Used to track and clear System Managed Identity role assignment.
-  assignmentDefinitionMarker: ArmRoleHermesFunctionAppkeyVaultSecretsOfficer
 
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
@@ -62,15 +65,6 @@ stages:
               Inline: |
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
-                Clear-ManagedIdentityRoleAssignment -FunctionAppName $(functionAppName) -ResourceGroupName $(resourceGroupName) -AssignmentDefinitionMarker $(assignmentDefinitionMarker) -Debug
-              FailOnStandardError: true
-              azurePowerShellVersion: "LatestVersion"
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: "Azure Hermes Project Dev"
-              ScriptType: "InlineScript"
-              Inline: |
-                "##[warning]$(functionAppIdentity)"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
@@ -97,7 +91,6 @@ stages:
               script: |
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
-
   - stage: Build
     displayName: Build stage
     jobs:
@@ -133,7 +126,6 @@ stages:
               replaceExistingArchive: true
           - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
             artifact: drop
-
   - stage: Deploy
     displayName: Deploy stage
     dependsOn:

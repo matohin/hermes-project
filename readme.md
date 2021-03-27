@@ -46,7 +46,7 @@ Set-AzKeyVaultSecret -VaultName $vaultName -SecretName "secretName" -SecretValue
 
 Every time Function App is deleted, "Key Vault Secrets Officer" role assignment on resource group for system managed identity of the app should be removed manually to avoid conflict on new role assignment.
 
-TODO: Switch to user assigned Function App identity to mitigate this issue.
+*TODO*: Switch to user assigned Function App identity to mitigate this issue.
 
 ## Just useful Commands
 
