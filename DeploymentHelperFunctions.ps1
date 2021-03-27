@@ -25,11 +25,9 @@ function Test-KeyVaultReadiness
 {
     param (
         [Parameter(Mandatory = $true)]
-        [string]
-        $KeyVaultName,
+        [string]$KeyVaultName,
         [Parameter(Mandatory = $true)]
-        [string[]]
-        $MandatorySecretsList
+        [string[]]$MandatorySecretsList
     )
 
     $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name hermes-proj-keyvault
@@ -39,5 +37,22 @@ function Test-KeyVaultReadiness
     {
         $CurrentSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $SecrenName
         if (!$CurrentSecret) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
+    }
+}
+
+function Confirm-ManagedIdentityRoleAssignment
+{
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$FunctionAppName,
+        [Parameter(Mandatory = $true)]
+        [string]$ResourceGroupName
+    )
+
+    $FunctionApp = Get-AzFunctionApp -Name $FunctionAppName -ResourceGroupName $ResourceGroupName
+
+    if (!$FunctionApp)
+    {
+        
     }
 }
