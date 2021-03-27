@@ -9,6 +9,7 @@ Core technologies:
 - Azure Key Vult
 - Application Insights
 - Python / pipenv / pytest
+- MSAL
 
 Just for fun/learning purposes, but real/working solution.
 

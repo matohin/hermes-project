@@ -46,13 +46,13 @@ stages:
           vmImage: $(vmImageName)
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
+            displayName: Deploying permanant / stateful resources
             inputs:
               deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Hermes Project Dev"
-              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              azureResourceManagerConnection: "$(azureResourceManagerConnection)"
+              subscriptionId: "$(azureResourceManagerConnection)"
               action: "Create Or Update Resource Group"
-              resourceGroupName: "rg-hermes-project-dev-00"
-              location: "North Europe"
+              resourceGroupName: "$(rg-hermes-project-dev-00)"
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_permanent/azuredeploy.json"
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
@@ -60,7 +60,8 @@ stages:
               deploymentMode: "Incremental"
           - task: AzurePowerShell@5
             inputs:
-              azureSubscription: "Azure Hermes Project Dev"
+              azureSubscription: $(azureResourceManagerConnection)
+              displayName: Check prerequisites for main resources template
               ScriptType: "InlineScript"
               Inline: |
                 Import-Module .\DeploymentHelperFunctions.ps1
@@ -69,28 +70,22 @@ stages:
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
             inputs:
-              azureSubscription: "Azure Hermes Project Dev"
+              azureSubscription: $(azureResourceManagerConnection)
               KeyVaultName: "$(keyVaultName)"
               SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Hermes Project Dev"
-              subscriptionId: "1192dbda-03e9-417a-8c81-7487e3525752"
+              azureResourceManagerConnection: "$(azureResourceManagerConnection)"
+              subscriptionId: "$(azureResourceManagerConnection)"
               action: "Create Or Update Resource Group"
-              resourceGroupName: "rg-hermes-project-dev-00"
-              location: "North Europe"
+              resourceGroupName: "$(rg-hermes-project-dev-00)"
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
               overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment)"
               deploymentMode: "Incremental"
-          - task: PowerShell@2
-            inputs:
-              targetType: "inline"
-              script: |
-                Import-Module .\DeploymentHelperFunctions.ps1
-                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
+
   - stage: Build
     displayName: Build stage
     jobs:
@@ -135,7 +130,7 @@ stages:
     jobs:
       - deployment: Deploy
         displayName: Deploy
-        environment: "development"
+        environment: $(environment)
         pool:
           vmImage: $(vmImageName)
         strategy:
@@ -150,3 +145,16 @@ stages:
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
+                - task: AzureKeyVault@1
+                  inputs:
+                    azureSubscription: $(azureResourceManagerConnection)
+                    KeyVaultName: "$(keyVaultName)"
+                    SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
+                    RunAsPreJob: false
+                - task: PowerShell@2
+                  displayName: Register callback WebHook in Telegram API
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      Import-Module .\DeploymentHelperFunctions.ps1
+                      Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
