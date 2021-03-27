@@ -18,6 +18,9 @@
         },
         "keyVaultName": {
             "value": "hermes-proj-keyvault"
+        },
+        "assignmentDefinitionMarker": {
+            "value": "ArmRoleHermesFunctionAppkeyVaultSecretsOfficer"
         }
     }
 }

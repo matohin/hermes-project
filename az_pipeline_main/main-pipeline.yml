@@ -21,6 +21,12 @@ variables:
   # Environment production status - dev/prod/etc
   environment: "dev"
 
+  # Name of a target resource group for all resources
+  resourceGroupName: "rg-hermes-project-dev-00"
+
+  # Used to track and clear System Managed Identity role assignment.
+  assignmentDefinitionMarker: ArmRoleHermesFunctionAppkeyVaultSecretsOfficer
+
   # Agent VM image name
   vmImageName: "ubuntu-20.04"
 
@@ -56,10 +62,7 @@ stages:
               Inline: |
                 Import-Module .\DeploymentHelperFunctions.ps1
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
-                $FunctionAppIdentityPrincipalId = (Get-AzFunctionApp | Where-Object{$_.Name -eq 'func-hermes-proj'}).IdentityPrincipalId
-                $env:functionAppIdentity = $FunctionAppIdentityPrincipalId
-                "##[warning]Warning message"
-                "##vso[task.setvariable variable=functionAppIdentity]$FunctionAppIdentityPrincipalId"
+                Clear-ManagedIdentityRoleAssignment -FunctionAppName $(functionAppName) -ResourceGroupName $(resourceGroupName) -AssignmentDefinitionMarker $(assignmentDefinitionMarker) -Debug
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
           - task: AzurePowerShell@5
@@ -86,7 +89,7 @@ stages:
               location: "North Europe"
               templateLocation: "Linked artifact"
               csmFile: "az_pipeline_main/azuredeploy.json"
-              overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment) -functionAppIdentity $(functionAppIdentity)"
+              overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment) -assignmentDefinitionMarker $(assignmentDefinitionMarker)"
               deploymentMode: "Incremental"
           - task: PowerShell@2
             inputs:

@@ -34,10 +34,10 @@
                 "description": "Evnvironment production satatus Dev/Prod/etc..."
             }
         },
-        "functionAppIdentity": {
+        "assignmentDefinitionMarker": {
             "type": "string",
             "metadata": {
-                "description": "Principal Id for Function App's system managed identity. To keep the deployment idempotent we need to track it and update role assignment only if necessary."
+                "description": "Added to a description of role assignment. Used to track assignment and keep deployment idempotency."
             }
         }
     },
@@ -197,7 +197,7 @@
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
                 "principalId": "[reference(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2018-11-30').principalId]",
-                "description": "ArmRoleHermesFunctionAppkeyVaultSecretsOfficer"
+                "description": "[parameters('assignmentDefinitionMarker')]"
             }
         }
     ],
