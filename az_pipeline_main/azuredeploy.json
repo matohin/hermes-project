@@ -224,10 +224,6 @@
         "keyVaultName": {
             "type": "string",
             "value": "[parameters('keyVaultName')]"
-        },
-        "functionAppIdentity": {
-            "type": "string",
-            "value": "[parameters('keyVaultName')]"
         }
     }
 }

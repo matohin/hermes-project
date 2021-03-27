@@ -58,6 +58,8 @@ stages:
                 Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
                 $FunctionAppIdentityPrincipalId = (Get-AzFunctionApp | Where-Object{$_.Name -eq 'func-hermes-proj'}).IdentityPrincipalId
                 $env:functionAppIdentity = $FunctionAppIdentityPrincipalId
+                "##[warning]Warning message"
+                "##[warning]$env:functionAppIdentity"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
             env:
