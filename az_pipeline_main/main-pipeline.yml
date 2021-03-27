@@ -59,21 +59,17 @@ stages:
                 $FunctionAppIdentityPrincipalId = (Get-AzFunctionApp | Where-Object{$_.Name -eq 'func-hermes-proj'}).IdentityPrincipalId
                 $env:functionAppIdentity = $FunctionAppIdentityPrincipalId
                 "##[warning]Warning message"
-                "##[warning]$env:functionAppIdentity"
+                "##vso[task.setvariable variable=functionAppIdentity]$FunctionAppIdentityPrincipalId"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
-            env:
-              functionAppIdentity: $(functionAppIdentity)
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
               ScriptType: "InlineScript"
               Inline: |
-                "##[warning]$env:functionAppIdentity"
+                "##[warning]$(functionAppIdentity)"
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
-            env:
-              functionAppIdentity: $(functionAppIdentity)
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: "Azure Hermes Project Dev"
