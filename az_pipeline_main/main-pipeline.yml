@@ -65,7 +65,7 @@ stages:
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               KeyVaultName: "$(keyVaultName)"
-              SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
+              SecretsFilter: telegramFunctionPermanentKey
               RunAsPreJob: false
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
@@ -79,9 +79,6 @@ stages:
               csmFile: "az_pipeline_main/azuredeploy.json"
               overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment)"
               deploymentMode: "Incremental"
-          - publish: $(workingDirectory)/DeploymentHelperFunctions.ps1
-            artifact: helper
-
   - stage: Build
     displayName: Build stage
     jobs:
@@ -141,11 +138,9 @@ stages:
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
-                - download: current
-                  artifact: helper
-
       - job: PostDeploySteps
         displayName: Post-deployment operations
+        checkout: none
         pool:
           vmImage: $(vmImageName)
         steps:
