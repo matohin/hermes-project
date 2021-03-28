@@ -30,7 +30,7 @@ function Test-KeyVaultReadiness
         [string[]]$MandatorySecretsList
     )
 
-    $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name hermes-proj-keyvault
+    $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $KeyVaultName
     if (!$KeyVaultObject) { Throw "KeyVault $KeyVaultName is not deployed, it should exist prior to main pipeline deployment" }
 
     foreach ($SecrenName in $MandatorySecretsList)
