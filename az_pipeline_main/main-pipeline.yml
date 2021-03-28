@@ -155,6 +155,8 @@ stages:
                     KeyVaultName: "$(keyVaultName)"
                     SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
                     RunAsPreJob: false
+                - download: current
+                  artifact: helper
                 - task: PowerShell@2
                   displayName: Register callback WebHook in Telegram API
                   inputs:
