@@ -1,18 +1,3 @@
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
-trigger:
-  branches:
-    include:
-      - "*"
-  paths:
-    exclude:
-      - readme.md
-
-variables:
-  System.Debug: false
-
-  # Project name
-  projectName: "hermes-proj"
 
   # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
   keyVaultName: "hermes-proj-keyvault"

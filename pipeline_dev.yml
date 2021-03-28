@@ -1,0 +1,16 @@
+trigger:
+  branches:
+    include:
+      - "*"
+  paths:
+    exclude:
+      - readme.md
+
+variables:
+  System.Debug: false
+
+  # Project name
+  projectName: "hermes-proj"
+
+extends:
+  template: pipeline.yml
