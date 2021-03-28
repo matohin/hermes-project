@@ -193,7 +193,7 @@
             "name": "[guid(variables('functionAppName'))]",
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('keyVaultSecretsOfficerRoleGiud'))]",
-                "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2018-11-30', 'Full').Identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2019-08-01', 'Full').identity.principalId]",
                 "description": "ARM Managed"
             }
         }
