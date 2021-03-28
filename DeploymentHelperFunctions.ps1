@@ -30,6 +30,9 @@ function Test-KeyVaultReadiness
         [string[]]$MandatorySecretsList
     )
 
+    Write-Debug -Message "KeyVaultName: $KeyVaultName"
+    Write-Debug -Message "MandatorySecretsList: $MandatorySecretsList"
+
     $KeyVaultObject = Get-AzResource -ResourceType Microsoft.KeyVault/vaults -Name $KeyVaultName
     if (!$KeyVaultObject) { Throw "KeyVault $KeyVaultName is not deployed, it should exist prior to main pipeline deployment" }
 
