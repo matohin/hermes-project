@@ -18,7 +18,7 @@ stages:
               resourceGroupName: $(resourceGroupName)
               templateLocation: "Linked artifact"
               csmFile: "arm_permanent/azuredeploy.json"
-              overrideParameters: "-projectName $(projectName) -keyVaultName $(keyVaultName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -environment $(environment) "
+              overrideParameters: "-projectName $(projectName) -environment $(environment) -keyVaultName $(keyVaultName)"
               deploymentMode: "Incremental"
           - task: AzurePowerShell@5
             inputs:
