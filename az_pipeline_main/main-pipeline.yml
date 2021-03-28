@@ -149,18 +149,21 @@ stages:
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
-                - task: AzureKeyVault@1
-                  inputs:
-                    azureSubscription: $(azureResourceManagerConnection)
-                    KeyVaultName: "$(keyVaultName)"
-                    SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
-                    RunAsPreJob: false
-                - download: current
-                  artifact: helper
-                - task: PowerShell@2
-                  displayName: Register callback WebHook in Telegram API
-                  inputs:
-                    targetType: "inline"
-                    script: |
-                      Import-Module "$(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
-                      Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
+
+      - post-daploy-steps:
+          - task: AzureKeyVault@1
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              KeyVaultName: "$(keyVaultName)"
+              SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
+              RunAsPreJob: false
+          - download: current
+            artifact: helper
+          - task: PowerShell@2
+            displayName: Register callback WebHook in Telegram API
+            inputs:
+              targetType: "inline"
+              script: |
+                Import-Module "$(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
+                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
+
