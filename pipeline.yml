@@ -1,4 +1,6 @@
+trigger: none
 
+variables:
   # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
   keyVaultName: "hermes-proj-keyvault"
 
