@@ -11,17 +11,17 @@ trigger:
 variables:
   System.Debug: false
 
+  # Environment production status - dev/prod/etc
+  environment: dev
+
   # Project name
-  projectName: "hermes-proj"
+  projectName: "hermes-proj-$(environment)"
 
   # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
-  keyVaultName: "hermes-proj-keyvault"
+  keyVaultName: "kv-$(projectName)"
 
   # Function app name
   functionAppName: "func-$(projectName)"
-
-  # Environment production status - dev/prod/etc
-  environment: dev
 
   # Subscription ID for target resource group
   subscriptionId: 1192dbda-03e9-417a-8c81-7487e3525752
