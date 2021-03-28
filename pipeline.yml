@@ -6,7 +6,7 @@ trigger:
       - "*"
   paths:
     exclude:
-      - "az_pipeline_permanent/*"
+      - readme.md
 
 variables:
   System.Debug: false
