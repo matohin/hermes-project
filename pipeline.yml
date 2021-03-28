@@ -124,4 +124,4 @@ stages:
               targetType: "inline"
               script: |
                 Import-Module ./DeploymentHelperFunctions.ps1
-                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
+                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
