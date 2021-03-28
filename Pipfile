@@ -11,6 +11,7 @@ v = {editable = true,version = "*"}
 azure-functions = "*"
 azure-identity = "*"
 azure-keyvault-secrets = "*"
+azure-servicebus = "*"
 msal = "*"
 requires = "*"
 pytest = "*"

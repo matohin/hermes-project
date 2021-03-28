@@ -162,7 +162,29 @@
                 {
                     "type": "Queues",
                     "apiVersion": "2017-04-01",
-                    "name": "sbq-otput",
+                    "name": "sbq-telegram-otput",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusNamespaceName'))]"
+                    ],
+                    "properties": {
+                        "lockDuration": "PT30S",
+                        "maxSizeInMegabytes": 1024,
+                        "requiresDuplicateDetection": false,
+                        "requiresSession": false,
+                        "defaultMessageTimeToLive": "P14D",
+                        "deadLetteringOnMessageExpiration": false,
+                        "enableBatchedOperations": true,
+                        "duplicateDetectionHistoryTimeWindow": "PT10M",
+                        "maxDeliveryCount": 10,
+                        "status": "Active",
+                        "enablePartitioning": false,
+                        "enableExpress": false
+                    }
+                },
+                {
+                    "type": "Queues",
+                    "apiVersion": "2017-04-01",
+                    "name": "sbq-integration-test",
                     "dependsOn": [
                         "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBusNamespaceName'))]"
                     ],
