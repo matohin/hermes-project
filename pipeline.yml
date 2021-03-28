@@ -27,7 +27,7 @@ stages:
               ScriptType: "InlineScript"
               Inline: |
                 Import-Module .\DeploymentHelperFunctions.ps1
-                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken') -Debug
+                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
               FailOnStandardError: true
               azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1

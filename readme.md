@@ -20,7 +20,7 @@ This project uses RBAC permissions model and creates role assignment to give fun
 Find Azure DevOps service principle:
 
 ``` Powershell
-$PiplineServicePrincipal = Get-AzADServicePrincipal -ApplicationId <application ID of connection SP> # Id can be looked up at connection settings
+$PiplineServicePrincipal = Get-AzADServicePrincipal -ApplicationId <application ID of connection SP> # in connection settings
 $PermanentInfrastructureResourceGroup = Get-AzResourceGroup -Name <resource group name>
 ```
 
