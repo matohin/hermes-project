@@ -61,13 +61,16 @@ stages:
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
               overrideParameters: "-keyVaultName $(keyVaultName)"
               deploymentMode: "Incremental"
-          - task: PowerShell@2
-            displayName: Register callback WebHook in Telegram API
+          - task: AzurePowerShell@5
             inputs:
-              targetType: "inline"
-              script: |
-                Import-Module ./DeploymentHelperFunctions.ps1
-                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @("telegramFunctionPermanentKey", "telegramBotToken")
+              azureSubscription: $(azureResourceManagerConnection)
+              displayName: Check prerequisites for main resources template
+              ScriptType: "InlineScript"
+              Inline: |
+                Import-Module .\DeploymentHelperFunctions.ps1
+                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @('telegramFunctionPermanentKey', 'telegramBotToken')
+              FailOnStandardError: true
+              azurePowerShellVersion: "LatestVersion"
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
