@@ -102,7 +102,7 @@ stages:
                 - task: AzureFunctionApp@1
                   displayName: "Azure functions app deploy"
                   inputs:
-                    azureSubscription: "Azure Hermes Project Dev"
+                    azureSubscription: $(azureResourceManagerConnection)
                     appType: "functionAppLinux"
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
