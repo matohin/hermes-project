@@ -150,7 +150,11 @@ stages:
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
 
-      - post-daploy-steps:
+      - job: PostDeploySteps
+        displayName: Post-deployment operations
+        pool:
+          vmImage: $(vmImageName)
+        steps:
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
@@ -166,4 +170,3 @@ stages:
               script: |
                 Import-Module "$(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
                 Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
-
