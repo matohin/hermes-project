@@ -9,6 +9,8 @@ trigger:
       - "az_pipeline_permanent/*"
 
 variables:
+  System.Debug: true
+
   # Project name
   projectName: "hermes-proj"
 
