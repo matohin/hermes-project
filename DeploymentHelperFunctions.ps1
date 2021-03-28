@@ -39,5 +39,3 @@ function Test-KeyVaultReadiness
         if (!$CurrentSecret) { Throw "Secret $CurrentSecret is not created in. Please consult readme and fill KeyVault with mandatory secrets before running main pipeline." }
     }
 }
-
-Register-TelegramWebhookUrl -TelegramBotToken sss:sss -FunctionAppName bbb -FunctionKey ccc

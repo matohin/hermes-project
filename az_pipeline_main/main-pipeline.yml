@@ -140,7 +140,6 @@ stages:
                     runtimeStack: "PYTHON|3.7"
       - job: PostDeploySteps
         displayName: Post-deployment operations
-        checkout: none
         pool:
           vmImage: $(vmImageName)
         steps:
@@ -150,12 +149,10 @@ stages:
               KeyVaultName: "$(keyVaultName)"
               SecretsFilter: "telegramFunctionPermanentKey, telegramBotToken"
               RunAsPreJob: false
-          - download: current
-            artifact: helper
           - task: PowerShell@2
             displayName: Register callback WebHook in Telegram API
             inputs:
               targetType: "inline"
               script: |
-                Import-Module $(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
+                Import-Module ./DeploymentHelperFunctions.ps1
                 Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
