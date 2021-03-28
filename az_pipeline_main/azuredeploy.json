@@ -127,6 +127,9 @@
         {
             "type": "Microsoft.Web/sites/host/functionKeys",
             "apiVersion": "2018-11-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+            ],
             "name": "[concat(parameters('functionAppName'), '/default/telegramFunctionPermanentKey')]",
             "properties": {
                 "value": "[parameters('telegramFunctionPermanentKey')]"
