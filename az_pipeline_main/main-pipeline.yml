@@ -9,7 +9,7 @@ trigger:
       - "az_pipeline_permanent/*"
 
 variables:
-  System.Debug: true
+  System.Debug: false
 
   # Project name
   projectName: "hermes-proj"
@@ -61,6 +61,13 @@ stages:
               csmParametersFile: "az_pipeline_permanent/azuredeploy.parameters.json"
               overrideParameters: "-keyVaultName $(keyVaultName)"
               deploymentMode: "Incremental"
+          - task: PowerShell@2
+            displayName: Register callback WebHook in Telegram API
+            inputs:
+              targetType: "inline"
+              script: |
+                Import-Module ./DeploymentHelperFunctions.ps1
+                Test-KeyVaultReadiness -KeyVaultName $(keyVaultName) -MandatorySecretsList @("telegramFunctionPermanentKey", "telegramBotToken")
           - task: AzureKeyVault@1
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
