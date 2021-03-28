@@ -87,6 +87,8 @@ stages:
               csmFile: "az_pipeline_main/azuredeploy.json"
               overrideParameters: "-projectName $(projectName) -functionAppName $(functionAppName) -telegramFunctionPermanentKey $(telegramFunctionPermanentKey) -keyVaultName $(keyVaultName) -environment $(environment)"
               deploymentMode: "Incremental"
+          - publish: $(workingDirectory)/DeploymentHelperFunctions.ps1
+            artifact: drop
 
   - stage: Build
     displayName: Build stage
@@ -158,5 +160,5 @@ stages:
                   inputs:
                     targetType: "inline"
                     script: |
-                      Import-Module .\DeploymentHelperFunctions.ps1
+                      Import-Module "$(Pipeline.Workspace)/drop/DeploymentHelperFunctions.ps1
                       Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey)
