@@ -1,4 +1,6 @@
-# Notes
+# Hermes Project
+
+## Why?
 
 Hermes project first prototype - connecting resources from personal Microsof account (Miscrosoft Graph) with Telegram bot.
 
@@ -13,7 +15,20 @@ Core technologies:
 
 Just for fun/learning purposes, but real/working solution.
 
-## Give pipeline premissions to deploy role assignment
+## How to deploy
+
+## Resources on Azure / AzureDevops
+
+1. Create a resource group for Dev environment. `New-AzResourceGroup -Name hermes-proj-dev -Location '<Azure region>'`
+2. Create a DevOps service connection for deploy to RG
+3. Create pipeline pointing to `pipeline_dev.yml`
+4. Give permissions to pipeline (section below)
+5. Fill / ceck RG/Subscription/Service connaction variables in `pipeline_dev.yml`
+6. Deploy
+7. Fill in secrets to created Key Vault and deploy again
+8. Repeat for Prod / `pipeline_prod.yml`
+
+### Give pipeline premissions to deploy role assignment
 
 This project uses RBAC permissions model and creates role assignment to give function app managed identity acces to azure deviops. Azure DevOps service connection identity should be given a pemission to create role assignment in the group, if pipeline is used to create a role assignment. Alternatives are: create role assignment manually on the portal and take it out of the template or use KeyVault access policy and disable RBAC permissions on KeyVault.
 
