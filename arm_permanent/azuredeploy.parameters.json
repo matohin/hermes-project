@@ -6,10 +6,10 @@
             "value": "hermes-proj"
         },
         "environment": {
-            "value": "prod"
+            "value": "dev"
         },
         "keyVaultName": {
-            "value": "hermes-proj-keyvault"
+            "value": "kv-hermes-proj-dev"
         }
     }
 }
