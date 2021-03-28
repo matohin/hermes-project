@@ -17,8 +17,8 @@ function Register-TelegramWebhookUrl
     $RequestBody = (@{url = $WebhookUrl } | ConvertTo-Json)
     Write-Debug -Message "Request body: $RequestBody"
 
-    # $Response = Invoke-RestMethod -Uri $TelegramApiURL -Method Post -ContentType "application/json" -Body $RequestBody
-    # Write-Debug -Message "API response: $Response"
+    $Response = Invoke-RestMethod -Uri $TelegramApiURL -Method Post -ContentType "application/json" -Body $RequestBody
+    Write-Debug -Message "API response: $Response"
 }
 
 function Test-KeyVaultReadiness

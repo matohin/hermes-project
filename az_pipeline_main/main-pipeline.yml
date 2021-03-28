@@ -151,6 +151,8 @@ stages:
                     appName: "$(functionAppName)"
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
                     runtimeStack: "PYTHON|3.7"
+                - download: current
+                  artifact: helper
 
       - job: PostDeploySteps
         displayName: Post-deployment operations
@@ -170,5 +172,5 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                Import-Module "$(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
-                # Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
+                Import-Module $(Pipeline.Workspace)/helper/DeploymentHelperFunctions.ps1
+                Register-TelegramWebhookUrl -TelegramBotToken $(telegramBotToken) -FunctionAppName $(functionAppName) -FunctionKey $(telegramFunctionPermanentKey) -Debug
