@@ -20,7 +20,7 @@ Just for fun/learning purposes, but real/working solution.
 ## Resources on Azure / AzureDevops
 
 1. Create a resource group for Dev environment. `New-AzResourceGroup -Name hermes-proj-dev -Location '<Azure region>'`
-2. Create a DevOps service connection for deploy to RG
+2. Create a DevOps Resource Manager Service Connection for deploy to RG
 3. Create pipeline pointing to `pipeline_dev.yml`
 4. Give permissions to pipeline (section below)
 5. Fill / ceck RG/Subscription/Service connaction variables in `pipeline_dev.yml`

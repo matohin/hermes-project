@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - readme.md
+
+variables:
+  System.Debug: false
+
+  # Environment production status - dev/prod/etc
+  environment: prod
+
+  # Project name
+  projectName: "hermes-proj-$(environment)"
+
+  # KeyVault name. Must match KeyVault name form Permanet Infrastructure Pipeline.
+  keyVaultName: "kv-$(projectName)"
+
+  # Function app name
+  functionAppName: "func-$(projectName)"
+
+  # Subscription ID for target resource group
+  subscriptionId: 1192dbda-03e9-417a-8c81-7487e3525752
+
+  # Service connection Name for target resource group
+  azureResourceManagerConnection: hermes-proj-serv-connection-prod
+
+  # Name of a target resource group for all resources
+  resourceGroupName: hermes-proj-prod
+
+  # Agent VM image name
+  vmImageName: "ubuntu-20.04"
+
+  # Working Directory
+  workingDirectory: "$(System.DefaultWorkingDirectory)/"
+
+extends:
+  template: pipeline.yml
