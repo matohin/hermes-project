@@ -31,9 +31,13 @@ def event_router(message_body: dict) -> None:
     group.add_argument(
         "/graph_auth", action="store_const", const=not_implemented, dest="command"
     )
+
     args, text = parser.parse_known_args(split_message_text)
 
-    args.command(text)
+    if not args.command:
+        echo(f"Input doesn't conatan a valid command".split())
+    else:
+        args.command(text)
 
 
 def not_implemented(additionalInput: list) -> None:

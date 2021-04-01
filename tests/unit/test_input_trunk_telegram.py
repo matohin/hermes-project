@@ -36,6 +36,11 @@ def test_event_router_echo(mocker):
         ("/echo some text", "echo", ["some", "text"]),
         ("/graph_auth other stuff", "not_implemented", ["other", "stuff"]),
         ("/graph_auth", "not_implemented", []),
+        (
+            "invalid commnd",
+            "echo",
+            ["Input", "doesn't", "conatan", "a", "valid", "command"],
+        ),
     ],
 )
 def test_event_router(telegram_input, expected_function, expected_parameter, mocker):
