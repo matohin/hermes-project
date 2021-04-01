@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 black = "==20.8b1"
 pytest = "*"
-pytest-mock = "*"
+# pytest-mock = "*"
 v = {editable = true,version = "*"}
 
 [packages]
