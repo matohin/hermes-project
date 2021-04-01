@@ -1,8 +1,11 @@
 import logging
 import argparse
 import shlex
+import os
 
 import azure.functions as func
+
+from azure.servicebus import ServiceBusClient, ServiceBusMessage
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -42,9 +45,19 @@ def event_router(message_body: dict) -> None:
 
 def not_implemented(additionalInput: list) -> None:
 
-    logging.error(f"Command {additionalInput} is notimplemented")
+    logging.warning(f"Command {additionalInput} is not implemented")
 
 
-def echo(additionalInput: list) -> None:
+def echo(extra_parameters: list) -> None:
 
-    logging.error(f"Command {additionalInput} is notimplemented")
+    connection_string = os.getenv("AzureWebJobsAzureSBConnection")
+    queue_name = "sbq-telegram-otput"
+
+    message = " ".join(extra_parameters)
+
+    with ServiceBusClient.from_connection_string(connection_string) as client:
+
+        with client.get_queue_sender(queue_name) as sender:
+
+            service_bus_message = ServiceBusMessage(message)
+            sender.send_messages(service_bus_message)
