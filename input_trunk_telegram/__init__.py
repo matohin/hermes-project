@@ -1,8 +1,6 @@
 import logging
-
 import argparse
 import shlex
-
 
 import azure.functions as func
 
