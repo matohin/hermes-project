@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a109b2acfb5d92c35753c61ffacc9eb43c29be017a3f2e58c7ebdc6799023613"
+            "sha256": "5cbe5fd619306977fc0d1e3b565692acbebe61eb57e7889bf3bb2de35a201e26"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -174,11 +174,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:036eae7ebbd41db176774c42e80f3288a1e41c7ebfc8ed099a94653973ebd00f",
-                "sha256:6fd684b4c6c7bb36d57e93d57fc244b5ffc08faa1c298bcda3dfbbbf19d7550a"
+                "sha256:c9db46394197244adf2f0b08ec5bc3cf16757e9590b02af1fca085c16c0d600a",
+                "sha256:d2d46ef77ffc85cbf7dac7e81dd663fde71c45326131bea8033b9bad42268ebe"
             ],
             "markers": "python_version < '3.8'",
-            "version": "==3.9.0"
+            "version": "==3.10.0"
         },
         "iniconfig": {
             "hashes": [
@@ -283,6 +283,14 @@
             ],
             "index": "pypi",
             "version": "==6.2.2"
+        },
+        "pytest-mock": {
+            "hashes": [
+                "sha256:379b391cfad22422ea2e252bdfc008edd08509029bcde3c25b2c0bd741e0424e",
+                "sha256:a1e2aba6af9560d313c642dae7e00a2a12b022b80301d9d7fc8ec6858e1dd9fc"
+            ],
+            "index": "pypi",
+            "version": "==3.5.1"
         },
         "pywin32": {
             "hashes": [

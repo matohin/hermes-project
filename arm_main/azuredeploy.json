@@ -119,6 +119,10 @@
                         {
                             "name": "KEY_VAULT_URI",
                             "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
+                        },
+                        {
+                            "name": "environment",
+                            "value": "[parameters('environment')]"
                         }
                     ]
                 }

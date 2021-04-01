@@ -6,8 +6,7 @@ import string
 
 if not os.getenv("KEY_VAULT_URI"):
 
-    os.environ["KEY_VAULT_URI"] = "https://kv-hermes-proj.vault.azure.net/"
-
+    os.environ["KEY_VAULT_URI"] = "https://kv-hermes-proj-dev.vault.azure.net/"
 
 def test_keyvault_access():
 
