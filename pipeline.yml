@@ -68,9 +68,10 @@ stages:
             inputs:
               versionSpec: 3.7
           - bash: |
-              python -m venv worker_venv
-              source worker_venv/bin/activate
-              pip install -r requirements.txt
+              pip install --upgrade pip
+              export PIPENV_VENV_IN_PROJECT="enabled"
+              python -m pipenv install --deploy
+              mv .venv worker_venv
             workingDirectory: $(workingDirectory)
             displayName: "Install application dependencies"
           - task: ArchiveFiles@2
