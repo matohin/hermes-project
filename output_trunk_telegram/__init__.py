@@ -3,25 +3,13 @@ import azure.functions as func
 import json
 import requests
 
-TELEGRAM_API_TOKEN = "845789670:AAEf2dmacBxiVSLtmpLIMpks2J_o-_XznQA"
+from shared.key_vault_helper import get_key_vault_secret
 
+if not TELEGRAM_API_TOKEN:
 
-def main(msg: func.ServiceBusMessage):
+    TELEGRAM_API_TOKEN = get_key_vault_secret("telegramBotToken")
 
-    logging.info(msg.get_body().decode("utf-8"))
-
-    method = "sendMessage"
-    data = {"chat_id": "55033450", "text": "ffdfd"}
-
-    response = call_telegram_api(method, data)
-
-
-def set_callback_webhook(url):
-
-    method = "setWebhook"
-    data = {"url": url}
-
-    response = call_telegram_api(method, data)
+CHAT_ID = 55033450
 
 
 def call_telegram_api(method, data):
@@ -31,3 +19,28 @@ def call_telegram_api(method, data):
     response = requests.post(url, headers=headers, json=data)
 
     return response
+
+
+def main(msg: func.ServiceBusMessage) -> None:
+
+    msg_text = msg.get_body().decode("utf-8")
+    logging.info(msg_text)
+
+    method = "sendMessage"
+    data = {"chat_id": CHAT_ID, "text": msg_text}
+
+    response = call_telegram_api(method, data)
+
+    logging.info(response)
+
+
+def set_callback_webhook(url: str) -> None:
+
+    logging.info("Starting `setWebhook` operation on Telagram API")
+
+    method = "setWebhook"
+    data = {"url": url}
+
+    response = call_telegram_api(method, data)
+
+    logging.info(response)
