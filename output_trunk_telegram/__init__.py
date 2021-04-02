@@ -14,15 +14,22 @@ CHAT_ID = 55033450
 
 def call_telegram_api(method, data):
 
+    logging.info(f"Calling Telegram API method {method}, request body below")
+    logging.info(data)
+
     url = f"https://api.telegram.org/bot{TELEGRAM_API_TOKEN}/{method}"
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, headers=headers, json=data)
+
+    logging.info("Recived API response")
+    logging.info(response)
 
     return response
 
 
 def main(msg: func.ServiceBusMessage) -> None:
 
+    logging.info("Sending message to Telegram")
     msg_text = msg.get_body().decode("utf-8")
     logging.info(msg_text)
 
@@ -30,8 +37,6 @@ def main(msg: func.ServiceBusMessage) -> None:
     data = {"chat_id": CHAT_ID, "text": msg_text}
 
     response = call_telegram_api(method, data)
-
-    logging.info(response)
 
 
 def set_callback_webhook(url: str) -> None:
