@@ -3,7 +3,7 @@ import azure.functions as func
 import json
 import requests
 
-from shared.key_vault_helper import get_key_vault_secret
+from shared import get_key_vault_secret
 
 if "TELEGRAM_API_TOKEN" not in globals():
 
@@ -36,7 +36,7 @@ def main(msg: func.ServiceBusMessage) -> None:
     method = "sendMessage"
     data = {"chat_id": CHAT_ID, "text": msg_text}
 
-    response = call_telegram_api(method, data)
+    call_telegram_api(method, data)
 
 
 def set_callback_webhook(url: str) -> None:
