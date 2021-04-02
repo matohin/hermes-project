@@ -5,7 +5,7 @@ import requests
 
 from shared.key_vault_helper import get_key_vault_secret
 
-if not TELEGRAM_API_TOKEN:
+if "TELEGRAM_API_TOKEN" not in globals():
 
     TELEGRAM_API_TOKEN = get_key_vault_secret("telegramBotToken")
 
