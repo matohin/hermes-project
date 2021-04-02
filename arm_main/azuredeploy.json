@@ -91,7 +91,7 @@
             "properties": {
                 "enabled": true,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
-                "linuxFxVersion": "mcr.microsoft.com/azure-functions/python:3.0-python3.8",
+                "linuxFxVersion": "mcr.microsoft.com/azure-functions/python:3.0-python3.6",
                 "http20Enabled": true,
                 "detailedErrorLoggingEnabled": true,
                 "siteConfig": {
