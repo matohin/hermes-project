@@ -12,6 +12,18 @@ if "TELEGRAM_API_TOKEN" not in globals():
 CHAT_ID = 55033450
 
 
+def main(msg: func.ServiceBusMessage) -> None:
+
+    logging.info("Sending message to Telegram")
+    msg_text = msg.get_body().decode("utf-8")
+    logging.info(msg_text)
+
+    method = "sendMessage"
+    data = {"chat_id": CHAT_ID, "text": msg_text}
+
+    response = call_telegram_api(method, data)
+
+
 def call_telegram_api(method, data):
 
     logging.info(f"Calling Telegram API method {method}, request body below")
@@ -25,18 +37,6 @@ def call_telegram_api(method, data):
     logging.info(response)
 
     return response
-
-
-def main(msg: func.ServiceBusMessage) -> None:
-
-    logging.info("Sending message to Telegram")
-    msg_text = msg.get_body().decode("utf-8")
-    logging.info(msg_text)
-
-    method = "sendMessage"
-    data = {"chat_id": CHAT_ID, "text": msg_text}
-
-    response = call_telegram_api(method, data)
 
 
 def set_callback_webhook(url: str) -> None:
