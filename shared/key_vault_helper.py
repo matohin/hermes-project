@@ -15,7 +15,7 @@ def get_key_vault_secret(secret_name: str) -> str:
 
     logging.info(f"Starting secret retrival")
 
-    secret = client.get_secret(test_secret_name)
+    secret = client.get_secret(secret_name)
 
     logging.info(f"Returning secret data")
 
