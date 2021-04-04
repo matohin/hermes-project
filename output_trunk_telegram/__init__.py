@@ -3,16 +3,25 @@ import azure.functions as func
 import json
 import requests
 
-from shared import get_key_vault_secret
+from shared.key_vault_helper import get_key_vault_secret
 
-if "TELEGRAM_API_TOKEN" not in globals():
 
-    TELEGRAM_API_TOKEN = get_key_vault_secret("telegramBotToken")
+def verify_global_parameters():
 
-CHAT_ID = 55033450
+    if "TELEGRAM_API_TOKEN" not in globals():
+
+        global TELEGRAM_API_TOKEN
+        TELEGRAM_API_TOKEN = get_key_vault_secret("telegramBotToken")
+
+    if "CHAT_ID" not in globals():
+
+        global CHAT_ID
+        CHAT_ID = 55033450
 
 
 def call_telegram_api(method, data):
+
+    verify_global_parameters()
 
     logging.info(f"Calling Telegram API method {method}, request body below")
     logging.info(data)
