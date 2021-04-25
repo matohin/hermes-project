@@ -89,10 +89,18 @@ def chat_auth(additional_input: list) -> None:
 
         set_key_vault_secret("chatAuthKey", additional_input[-1])
 
+        send_to_telegram_output(
+            "Authentication succesfull. Please, remove key from the chat."
+        )
+
+    else:
+
+        send_to_telegram_output("Key doesn't match. Please, try again.")
+
 
 def echo(additional_input: list) -> None:
 
     logging.warning("Sending additional input as echo")
 
     msg = " ".join(additional_input)
-    send_service_bus_message(msg, "sbq-telegram-otput")
+    send_to_telegram_output(msg, "sbq-telegram-otput")

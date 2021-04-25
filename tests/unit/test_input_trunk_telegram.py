@@ -101,12 +101,18 @@ def test_chat_auth_granted(mocker):
     mock_set_key_vault_secret = mocker.patch(
         "input_trunk_telegram.set_key_vault_secret"
     )
+    mock_send_to_telegram_output = mocker.patch(
+        "input_trunk_telegram.send_to_telegram_output"
+    )
 
     chat_auth([chat_auth_key, chat_id])
     mock_set_key_vault_secret.assert_called_once_with("chatAuthKey", chat_id)
+    mock_send_to_telegram_output.assert_called_once_with(
+        "Authentication succesfull. Please, remove key from the chat."
+    )
 
 
-def test_chat_auth_regected(mocker):
+def test_chat_auth_rejected(mocker):
 
     random_source = string.ascii_letters + string.digits + string.punctuation
 
@@ -119,6 +125,22 @@ def test_chat_auth_regected(mocker):
     mock_set_key_vault_secret = mocker.patch(
         "input_trunk_telegram.set_key_vault_secret"
     )
+    mock_send_to_telegram_output = mocker.patch(
+        "input_trunk_telegram.send_to_telegram_output"
+    )
 
     chat_auth([chat_auth_key_provided, chat_id])
     mock_set_key_vault_secret.assert_not_called()
+    mock_send_to_telegram_output.assert_called_once_with(
+        "Key doesn't match. Please, try again."
+    )
+
+
+def test_echo():
+    # TODO
+    pass
+
+
+def test_not_implemented():
+    # TODO
+    pass
