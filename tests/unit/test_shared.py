@@ -3,6 +3,7 @@ import string
 
 from shared.key_vault_helper import get_key_vault_secret
 from shared.environment_helper import verify_key_vault_parameters
+from shared.service_bus_helper import send_service_bus_message
 
 
 def test_get_key_vault_secret(mocker):
@@ -62,3 +63,37 @@ def test_verify_key_vault_parameters(mocker):
 
     mock_env.__setitem__.assert_any_call(key1, value1)
     mock_env.__setitem__.assert_called_with(key2, value2)
+
+
+def test_send_service_bus_message(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+    connection_string = "".join(choice(random_source) for i in range(20))
+    msg = "".join(choice(random_source) for i in range(20))
+    queue_name = "".join(choice(random_source) for i in range(20))
+
+    mocker.patch("shared.service_bus_helper.os.getenv", return_value=connection_string)
+
+    service_bus_client_mock = mocker.patch(
+        "shared.service_bus_helper.ServiceBusClient.from_connection_string"
+    )
+
+    service_bus_message_object = "".join(choice(random_source) for i in range(20))
+    service_bus_message_mock = mocker.patch(
+        "shared.service_bus_helper.ServiceBusMessage",
+        return_value=service_bus_message_object,
+    )
+
+    send_service_bus_message(msg, queue_name)
+
+    service_bus_client_mock.assert_called_with(connection_string)
+
+    client_mock = service_bus_client_mock.return_value.__enter__.return_value
+
+    client_mock.get_queue_sender.assert_called_with(queue_name)
+
+    sender_mock = client_mock.get_queue_sender.return_value.__enter__.return_value
+
+    service_bus_message_mock.assert_called_with(msg)
+
+    sender_mock.send_messages.assert_called_with(service_bus_message_object)
