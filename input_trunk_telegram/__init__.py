@@ -5,9 +5,9 @@ import os
 
 import azure.functions as func
 
-from azure.servicebus import ServiceBusClient, ServiceBusMessage
 from shared.environment_helper import verify_key_vault_parameters, KEVAULT_ENV_VARS
 from shared.service_bus_helper import send_to_telegram_output
+from shared.key_vault_helper import set_key_vault_secret
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -23,13 +23,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse()
 
 
-def id_checker(chat_id: int) -> None:
+def id_checker(chat_id: int) -> bool:
 
     verify_key_vault_parameters(KEVAULT_ENV_VARS)
+    authorized_chat_id = os.getenv("CHAT_ID")
 
-    if os.getenv("CHAT_ID") == chat_id:
+    if int(authorized_chat_id) == int(chat_id):
         return True
-
     else:
         return False
 
@@ -53,10 +53,13 @@ def event_router(message_body: dict) -> None:
 
     args, text = parser.parse_known_args(split_message_text)
 
-    execution_allowed = id_checker(message_body["message"]["chat"]["id"])
+    chat_id = message_body["message"]["chat"]["id"]
+
+    execution_allowed = id_checker(chat_id)
 
     if args.command == chat_auth:
         execution_allowed = True
+        text.append(chat_id)
 
     if not execution_allowed:
         send_to_telegram_output(
@@ -68,7 +71,7 @@ def event_router(message_body: dict) -> None:
         args.command(text)
 
 
-def not_implemented(additionalInput: list) -> None:
+def not_implemented(additional_input: list) -> None:
 
     logging.warning(f"Command is not implemented")
     send_to_telegram_output(
@@ -76,13 +79,20 @@ def not_implemented(additionalInput: list) -> None:
     )
 
 
-def chat_auth(additionalInput: list) -> None:
+def chat_auth(additional_input: list) -> None:
 
     logging.warning(f"Starting chat athentication")
 
+    verify_key_vault_parameters(KEVAULT_ENV_VARS)
 
-def echo(extra_aruments: list) -> None:
+    if additional_input[0] == os.getenv("CHAT_AUTH_KEY"):
 
-    msg = " ".join(list1)
+        set_key_vault_secret("chatAuthKey", additional_input[-1])
 
+
+def echo(additional_input: list) -> None:
+
+    logging.warning("Sending additional input as echo")
+
+    msg = " ".join(additional_input)
     send_service_bus_message(msg, "sbq-telegram-otput")

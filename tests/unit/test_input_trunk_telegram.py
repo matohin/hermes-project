@@ -1,5 +1,12 @@
 import azure.functions as func
-from input_trunk_telegram import main, event_router, echo, not_implemented, id_checker
+from input_trunk_telegram import (
+    main,
+    event_router,
+    echo,
+    not_implemented,
+    id_checker,
+    chat_auth,
+)
 
 import json
 import pytest
@@ -39,14 +46,14 @@ def test_input_trunk_telegram(mocker):
             "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command",
             False,
         ),
-        ("/chat_auth secret", "chat_auth", ["secret"], False),
+        ("/chat_auth secret", "chat_auth", ["secret", "123456"], False),
     ],
 )
 def test_event_router(
     telegram_input, expected_function, expected_parameter, chat_id_check_result, mocker
 ):
 
-    chat_id = "".join(choice(string.digits) for i in range(6))
+    chat_id = "123456"
 
     function_mock = mocker.patch(f"input_trunk_telegram.{expected_function}")
     mock_id_checker = mocker.patch(
@@ -66,6 +73,9 @@ def test_event_router(
     "chat_id_env, chat_id_input, expected",
     [
         (123456, 123456, True),
+        (123456, "123456", True),
+        ("123456", 123456, True),
+        ("123456", "123456", True),
         (123456, 654321, False),
     ],
 )
@@ -77,3 +87,38 @@ def test_id_checker_false(chat_id_env, chat_id_input, expected, mocker):
     actual = id_checker(chat_id_input)
 
     assert actual == expected
+
+
+def test_chat_auth_granted(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+
+    chat_id = "".join(choice(string.digits) for i in range(6))
+    chat_auth_key = "".join(choice(random_source) for i in range(20))
+
+    mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
+    mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key)
+    mock_set_key_vault_secret = mocker.patch(
+        "input_trunk_telegram.set_key_vault_secret"
+    )
+
+    chat_auth([chat_auth_key, chat_id])
+    mock_set_key_vault_secret.assert_called_once_with("chatAuthKey", chat_id)
+
+
+def test_chat_auth_regected(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+
+    chat_id = "".join(choice(string.digits) for i in range(6))
+    chat_auth_key_expected = "".join(choice(random_source) for i in range(20))
+    chat_auth_key_provided = "".join(choice(random_source) for i in range(20))
+
+    mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
+    mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key_expected)
+    mock_set_key_vault_secret = mocker.patch(
+        "input_trunk_telegram.set_key_vault_secret"
+    )
+
+    chat_auth([chat_auth_key_provided, chat_id])
+    mock_set_key_vault_secret.assert_not_called()

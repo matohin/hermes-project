@@ -2,8 +2,10 @@ from secrets import choice
 import string
 
 from shared.key_vault_helper import get_key_vault_secret
+from shared.key_vault_helper import set_key_vault_secret
 from shared.environment_helper import verify_key_vault_parameters
 from shared.service_bus_helper import send_to_telegram_output
+from shared.service_bus_helper import send_service_bus_message
 
 
 def test_get_key_vault_secret(mocker):
@@ -35,6 +37,23 @@ def test_get_key_vault_secret(mocker):
     key_vault_client.get_secret.assert_called_with(secret_name)
 
     assert actual == secret_value
+
+
+def test_set_key_vault_secret(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+
+    secret_name = "".join(choice(string.ascii_letters) for i in range(10))
+    secret_value = "".join(choice(random_source) for i in range(20))
+
+    mock_client = mocker.Mock()
+    mocker.patch("shared.key_vault_helper.os.getenv")
+    mocker.patch("shared.key_vault_helper.DefaultAzureCredential")
+    mocker.patch("shared.key_vault_helper.SecretClient", return_value=mock_client)
+
+    set_key_vault_secret(secret_name, secret_value)
+
+    mock_client.set_secret.assert_called_once_with(secret_name, secret_value)
 
 
 def test_verify_key_vault_parameters(mocker):
