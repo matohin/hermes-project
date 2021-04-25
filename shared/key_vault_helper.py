@@ -17,3 +17,4 @@ def get_key_vault_secret(secret_name: str) -> str:
 
     logging.info(f"Returning secret data")
     return secret.value
+
