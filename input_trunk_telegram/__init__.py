@@ -103,4 +103,4 @@ def echo(additional_input: list) -> None:
     logging.warning("Sending additional input as echo")
 
     msg = " ".join(additional_input)
-    send_to_telegram_output(msg, "sbq-telegram-otput")
+    send_to_telegram_output(msg)
