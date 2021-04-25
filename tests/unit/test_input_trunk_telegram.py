@@ -6,6 +6,7 @@ from input_trunk_telegram import (
     not_implemented,
     id_checker,
     chat_auth,
+    not_implemented,
 )
 
 import json
@@ -136,11 +137,25 @@ def test_chat_auth_rejected(mocker):
     )
 
 
-def test_echo():
-    # TODO
-    pass
+def test_echo(mocker):
+
+    mock_send_to_telegram_output = mocker.patch(
+        "input_trunk_telegram.send_to_telegram_output"
+    )
+
+    echo(["a", "b"])
+
+    mock_send_to_telegram_output.assert_called_once_with("a b")
 
 
-def test_not_implemented():
-    # TODO
-    pass
+def test_not_implemented(mocker):
+
+    mock_send_to_telegram_output = mocker.patch(
+        "input_trunk_telegram.send_to_telegram_output"
+    )
+
+    not_implemented(["a", "b"])
+
+    mock_send_to_telegram_output.assert_called_once_with(
+        "This command is not implemented yet"
+    )

@@ -62,26 +62,31 @@ def test_verify_key_vault_parameters(mocker):
 
     key1 = "".join(choice(string.ascii_letters) for i in range(20))
     key2 = "".join(choice(string.ascii_letters) for i in range(20))
+    key3 = "".join(choice(string.ascii_letters) for i in range(20))
 
     value1 = "".join(choice(random_source) for i in range(20))
     value2 = "".join(choice(random_source) for i in range(20))
+    value3 = "".join(choice(random_source) for i in range(20))
 
-    parameters = {key1: value1, key2: value2}
+    parameters = {key1: value1, key2: value2, key3: value3}
 
     mock_env = mocker.patch("shared.environment_helper.environ")
     mock_env.get.return_value = None
 
     mocker.patch(
-        "shared.environment_helper.get_key_vault_secret", side_effect=[value1, value2]
+        "shared.environment_helper.get_key_vault_secret",
+        side_effect=[value1, value2, None],
     )
 
     verify_key_vault_parameters(parameters)
 
     mock_env.get.assert_any_call(key1)
-    mock_env.get.assert_called_with(key2)
+    mock_env.get.assert_any_call(key2)
+    mock_env.get.assert_called_with(key3)
 
     mock_env.__setitem__.assert_any_call(key1, value1)
     mock_env.__setitem__.assert_called_with(key2, value2)
+    assert mock_env.__setitem__.call_count == 2
 
 
 def test_send_service_bus_message(mocker):

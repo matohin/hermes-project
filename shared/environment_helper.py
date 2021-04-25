@@ -15,4 +15,8 @@ def verify_key_vault_parameters(parameters: dict) -> None:
 
         if not environ.get(parameter):
 
-            environ[parameter] = get_key_vault_secret(secret_name)
+            secret_value = get_key_vault_secret(secret_name)
+
+            if secret_value:
+
+                environ[parameter] = secret_value
