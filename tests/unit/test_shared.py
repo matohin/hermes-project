@@ -3,7 +3,7 @@ import string
 
 from shared.key_vault_helper import get_key_vault_secret
 from shared.environment_helper import verify_key_vault_parameters
-from shared.service_bus_helper import send_service_bus_message
+from shared.service_bus_helper import send_to_telegram_output
 
 
 def test_get_key_vault_secret(mocker):

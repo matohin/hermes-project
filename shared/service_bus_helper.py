@@ -12,3 +12,8 @@ def send_service_bus_message(message: str, queue_name: str) -> None:
 
             service_bus_message = ServiceBusMessage(message)
             sender.send_messages(service_bus_message)
+
+
+def send_to_telegram_output(msg: str) -> None:
+
+    send_service_bus_message(msg, "sbq-telegram-otput")

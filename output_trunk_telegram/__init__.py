@@ -4,7 +4,7 @@ import json
 import requests
 from os import environ
 
-from shared.environment_helper import verify_key_vault_parameters
+from shared.environment_helper import verify_key_vault_parameters, KEVAULT_ENV_VARS
 
 
 def call_telegram_api(method: str, data: dict) -> requests.Response:
@@ -25,9 +25,7 @@ def call_telegram_api(method: str, data: dict) -> requests.Response:
 
 def main(msg: func.ServiceBusMessage) -> None:
 
-    parameters = {"TELEGRAM_API_TOKEN": "telegramBotToken", "CHAT_ID": "ChatId"}
-
-    verify_key_vault_parameters(parameters)
+    verify_key_vault_parameters(KEVAULT_ENV_VARS)
 
     logging.info("Sending message to Telegram")
     msg_text = msg.get_body().decode("utf-8")

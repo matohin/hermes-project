@@ -1,6 +1,5 @@
 import azure.functions as func
-from input_trunk_telegram import main, event_router, echo, not_implemented
-from azure.servicebus import ServiceBusClient, ServiceBusMessage
+from input_trunk_telegram import main, event_router, echo, not_implemented, id_checker
 
 import json
 import pytest
@@ -23,58 +22,58 @@ def test_input_trunk_telegram(mocker):
 
 
 @pytest.mark.parametrize(
-    "telegram_input, expected_function, expected_parameter",
+    "telegram_input, expected_function, expected_parameter, chat_id_check_result",
     [
-        ("/echo some text", "echo", ["some", "text"]),
-        ("/graph_auth other stuff", "not_implemented", ["other", "stuff"]),
-        ("/graph_auth", "not_implemented", []),
+        ("/echo some text", "echo", ["some", "text"], True),
+        ("/graph_auth other stuff", "not_implemented", ["other", "stuff"], True),
+        ("/graph_auth", "not_implemented", [], True),
         (
             "invalid commnd",
-            "echo",
-            ["Input", "doesn't", "conatan", "a", "valid", "command"],
+            "send_to_telegram_output",
+            "Input doesn't conatan a valid command",
+            True,
         ),
+        (
+            "/graph_auth",
+            "send_to_telegram_output",
+            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command",
+            False,
+        ),
+        ("/chat_auth secret", "chat_auth", ["secret"], False),
     ],
 )
-def test_event_router(telegram_input, expected_function, expected_parameter, mocker):
+def test_event_router(
+    telegram_input, expected_function, expected_parameter, chat_id_check_result, mocker
+):
+
+    chat_id = "".join(choice(string.digits) for i in range(6))
 
     function_mock = mocker.patch(f"input_trunk_telegram.{expected_function}")
+    mock_id_checker = mocker.patch(
+        "input_trunk_telegram.id_checker", return_value=chat_id_check_result
+    )
 
-    body = {"message": {"text": telegram_input}}
+    body = {"message": {"text": telegram_input, "chat": {"id": chat_id}}}
 
     event_router(body)
+
+    mock_id_checker.assert_called_once_with(chat_id)
 
     function_mock.assert_called_with(expected_parameter)
 
 
-def test_echo(mocker):
+@pytest.mark.parametrize(
+    "chat_id_env, chat_id_input, expected",
+    [
+        (123456, 123456, True),
+        (123456, 654321, False),
+    ],
+)
+def test_id_checker_false(chat_id_env, chat_id_input, expected, mocker):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-    connection_string = "".join(choice(random_source) for i in range(20))
+    mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
+    mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_id_env)
 
-    getenv_mock = mocker.patch(
-        "input_trunk_telegram.os.getenv", return_value=connection_string
-    )
+    actual = id_checker(chat_id_input)
 
-    service_bus_client_mock = mocker.patch(
-        "input_trunk_telegram.ServiceBusClient.from_connection_string",
-    )
-
-    service_bus_message_object = "".join(choice(random_source) for i in range(20))
-    service_bus_message_mock = mocker.patch(
-        "input_trunk_telegram.ServiceBusMessage",
-        return_value=service_bus_message_object,
-    )
-
-    echo(["a", "b"])
-
-    service_bus_client_mock.assert_called_with(connection_string)
-
-    client_mock = service_bus_client_mock.return_value.__enter__.return_value
-
-    client_mock.get_queue_sender.assert_called_with("sbq-telegram-otput")
-
-    sender_mock = client_mock.get_queue_sender.return_value.__enter__.return_value
-
-    service_bus_message_mock.assert_called_with("a b")
-
-    sender_mock.send_messages.assert_called_with(service_bus_message_object)
+    assert actual == expected
