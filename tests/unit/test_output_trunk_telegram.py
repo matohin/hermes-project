@@ -1,17 +1,84 @@
+import string
+from random import choice
+
+
 import azure.functions as func
-from output_trunk_telegram import main, set_callback_webhook
+from output_trunk_telegram import main, call_telegram_api, verify_key_vault_parameters
 
 
-def test_output_trunk_telegram():
+def test_verify_key_vault_parameters(mocker):
 
-    incoming_service_bus_msg = func.servicebus.ServiceBusMessage(
-        body=b"{}", message_id="id123", user_properties={"user1": "description1"}
+    random_source = string.ascii_letters + string.digits + string.punctuation
+
+    key1 = "".join(choice(string.ascii_letters) for i in range(20))
+    key2 = "".join(choice(string.ascii_letters) for i in range(20))
+
+    value1 = "".join(choice(random_source) for i in range(20))
+    value2 = "".join(choice(random_source) for i in range(20))
+
+    parameters = {key1: value1, key2: value2}
+
+    mock_env = mocker.patch("output_trunk_telegram.environ")
+    mock_env.get.return_value = None
+
+    mock_get_key_vault_secret = mocker.patch(
+        "output_trunk_telegram.get_key_vault_secret", side_effect=[value1, value2]
     )
 
-    result = main(incoming_service_bus_msg)
+    verify_key_vault_parameters(parameters)
 
-    assert result == 1
+    mock_env.get.assert_any_call(key1)
+    mock_env.get.assert_called_with(key2)
 
-    # set_callback_webhook(
-    #     "https://func11.azurewebsites.net/api/input_trunk_telegram?code=UYKRY7CDM/X1vJm9lmc5R3GE6uvtQnaUDCFUCkQaB0aAuGEQIWCp4A=="
-    # )
+    mock_env.__setitem__.assert_any_call(key1, value1)
+    mock_env.__setitem__.assert_called_with(key2, value2)
+
+
+def test_call_telegram_api(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+
+    method = "".join(choice(random_source) for i in range(20))
+    data = "".join(choice(random_source) for i in range(20))
+    token = "".join(choice(random_source) for i in range(20))
+
+    response = mocker.Mock()
+
+    mocker.patch("output_trunk_telegram.environ.get", side_effect=[token, method])
+    mock_requests = mocker.patch("output_trunk_telegram.requests")
+    mock_requests.post.return_value = response
+
+    call_telegram_api(method, data)
+
+    mock_requests.post.assert_called_once_with(
+        f"https://api.telegram.org/bot{token}/{method}",
+        headers={"Content-Type": "application/json"},
+        json=data,
+    )
+
+    response.raise_for_status.assert_called_once_with()
+
+
+def test_output_trunk_telegram_main(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+    chat_id = "".join(choice(random_source) for i in range(20))
+    msg_text = "".join(choice(random_source) for i in range(20))
+
+    mocker.patch("output_trunk_telegram.environ.get", return_value=chat_id)
+
+    mock_call_telegram_api = mocker.patch(
+        "output_trunk_telegram.call_telegram_api", return_value=chat_id
+    )
+
+    incoming_service_bus_msg = func.servicebus.ServiceBusMessage(
+        body=bytes(msg_text, "utf-8"),
+        message_id="id123",
+        user_properties={"user1": "description1"},
+    )
+
+    main(incoming_service_bus_msg)
+
+    mock_call_telegram_api.assert_called_once_with(
+        "sendMessage", {"chat_id": chat_id, "text": msg_text}
+    )

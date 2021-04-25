@@ -2,59 +2,49 @@ import logging
 import azure.functions as func
 import json
 import requests
+from os import environ
 
 from shared.key_vault_helper import get_key_vault_secret
 
 
-def verify_global_parameters():
+def verify_key_vault_parameters(parameters: dict) -> None:
 
-    if "TELEGRAM_API_TOKEN" not in globals():
+    for parameter, secret_name in parameters.items():
 
-        global TELEGRAM_API_TOKEN
-        TELEGRAM_API_TOKEN = get_key_vault_secret("telegramBotToken")
+        if not environ.get(parameter):
 
-    if "CHAT_ID" not in globals():
-
-        global CHAT_ID
-        CHAT_ID = 55033450
+            environ[parameter] = get_key_vault_secret(secret_name)
 
 
-def call_telegram_api(method, data):
+def call_telegram_api(method: str, data: dict) -> requests.Response:
 
-    verify_global_parameters()
+    logging.info(f"Calling Telegram API method {method}")
 
-    logging.info(f"Calling Telegram API method {method}, request body below")
-    logging.info(data)
-
-    url = f"https://api.telegram.org/bot{TELEGRAM_API_TOKEN}/{method}"
+    telegram_api_token = environ.get("TELEGRAM_API_TOKEN")
+    url = f"https://api.telegram.org/bot{telegram_api_token}/{method}"
     headers = {"Content-Type": "application/json"}
+
     response = requests.post(url, headers=headers, json=data)
 
     logging.info("Recived API response")
     logging.info(response)
 
-    return response
+    response.raise_for_status()
 
 
 def main(msg: func.ServiceBusMessage) -> None:
+
+    parameters = {"TELEGRAM_API_TOKEN": "telegramBotToken", "CHAT_ID": "ChatId"}
+
+    verify_key_vault_parameters(parameters)
 
     logging.info("Sending message to Telegram")
     msg_text = msg.get_body().decode("utf-8")
     logging.info(msg_text)
 
+    chat_id = environ.get("CHAT_ID")
+
     method = "sendMessage"
-    data = {"chat_id": CHAT_ID, "text": msg_text}
+    data = {"chat_id": chat_id, "text": msg_text}
 
     call_telegram_api(method, data)
-
-
-def set_callback_webhook(url: str) -> None:
-
-    logging.info("Starting `setWebhook` operation on Telagram API")
-
-    method = "setWebhook"
-    data = {"url": url}
-
-    response = call_telegram_api(method, data)
-
-    logging.info(response)
