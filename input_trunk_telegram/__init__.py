@@ -43,6 +43,7 @@ def event_router(message_body: dict) -> None:
     parser = argparse.ArgumentParser(prefix_chars="/")
     group = parser.add_mutually_exclusive_group()
     split_message_text = shlex.split(message_text)
+
     group.add_argument("/echo", action="store_const", const=echo, dest="command")
     group.add_argument(
         "/graph_auth", action="store_const", const=not_implemented, dest="command"

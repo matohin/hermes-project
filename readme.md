@@ -2,7 +2,7 @@
 
 ## Why?
 
-Hermes project first prototype - connecting resources from personal Microsof account (Miscrosoft Graph) with Telegram bot.
+Hermes project first prototype - connecting resources from personal Microsoft account (Miscrosoft Graph) with Telegram bot.
 
 Core technologies:
 
@@ -13,7 +13,7 @@ Core technologies:
 - Python / pipenv / pytest
 - MSAL
 
-Just for fun/learning purposes, but real/working solution.
+Just for fun and learning purposes, but real, working solution.
 
 ## How to deploy
 
