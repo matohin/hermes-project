@@ -104,7 +104,6 @@ def test_send_service_bus_message(mocker):
     )
 
     service_bus_message_object = mocker.Mock()
-    service_bus_message_object.to = mocker.PropertyMock()
 
     service_bus_message_mock = mocker.patch(
         "shared.service_bus_helper.ServiceBusMessage",
@@ -126,3 +125,17 @@ def test_send_service_bus_message(mocker):
     assert service_bus_message_object.to == to
 
     sender_mock.send_messages.assert_called_with(service_bus_message_object)
+
+
+def test_send_to_telegram_output(mocker):
+
+    random_source = string.ascii_letters + string.digits + string.punctuation
+    msg = "".join(choice(random_source) for i in range(20))
+    to = "".join(choice(string.digits) for i in range(20))
+
+    mock_send_service_bus_message = mocker.patch(
+        "shared.service_bus_helper.send_service_bus_message"
+    )
+
+    send_to_telegram_output(msg, to)
+    mock_send_service_bus_message.assert_called_once_with(msg, "sbq-telegram-otput", to)
