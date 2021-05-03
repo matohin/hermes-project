@@ -25,15 +25,11 @@ def call_telegram_api(method: str, data: dict) -> requests.Response:
 
 def main(msg: func.ServiceBusMessage) -> None:
 
-    verify_key_vault_parameters(KEVAULT_ENV_VARS)
-
     logging.info("Sending message to Telegram")
     msg_text = msg.get_body().decode("utf-8")
     logging.info(msg_text)
 
-    chat_id = environ.get("CHAT_ID")
-
     method = "sendMessage"
-    data = {"chat_id": chat_id, "text": msg_text}
+    data = {"chat_id": msg.to, "text": msg_text}
 
     call_telegram_api(method, data)

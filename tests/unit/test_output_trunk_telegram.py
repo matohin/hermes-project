@@ -38,8 +38,6 @@ def test_output_trunk_telegram_main(mocker):
     chat_id = "".join(choice(random_source) for i in range(20))
     msg_text = "".join(choice(random_source) for i in range(20))
 
-    mocker.patch("output_trunk_telegram.environ.get", return_value=chat_id)
-
     mock_call_telegram_api = mocker.patch(
         "output_trunk_telegram.call_telegram_api", return_value=chat_id
     )
@@ -48,6 +46,7 @@ def test_output_trunk_telegram_main(mocker):
         body=bytes(msg_text, "utf-8"),
         message_id="id123",
         user_properties={"user1": "description1"},
+        to=chat_id,
     )
 
     main(incoming_service_bus_msg)
