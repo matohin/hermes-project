@@ -95,6 +95,7 @@ def test_send_service_bus_message(mocker):
     connection_string = "".join(choice(random_source) for i in range(20))
     msg = "".join(choice(random_source) for i in range(20))
     queue_name = "".join(choice(random_source) for i in range(20))
+    to = int("".join(choice(string.digits) for i in range(20)))
 
     mocker.patch("shared.service_bus_helper.os.getenv", return_value=connection_string)
 
@@ -102,13 +103,15 @@ def test_send_service_bus_message(mocker):
         "shared.service_bus_helper.ServiceBusClient.from_connection_string"
     )
 
-    service_bus_message_object = "".join(choice(random_source) for i in range(20))
+    service_bus_message_object = mocker.Mock()
+    service_bus_message_object.to = mocker.PropertyMock()
+
     service_bus_message_mock = mocker.patch(
         "shared.service_bus_helper.ServiceBusMessage",
         return_value=service_bus_message_object,
     )
 
-    send_service_bus_message(msg, queue_name)
+    send_service_bus_message(msg, queue_name, to)
 
     service_bus_client_mock.assert_called_with(connection_string)
 
@@ -119,5 +122,7 @@ def test_send_service_bus_message(mocker):
     sender_mock = client_mock.get_queue_sender.return_value.__enter__.return_value
 
     service_bus_message_mock.assert_called_with(msg)
+
+    assert service_bus_message_object.to == to
 
     sender_mock.send_messages.assert_called_with(service_bus_message_object)
