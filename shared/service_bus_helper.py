@@ -10,8 +10,7 @@ def send_service_bus_message(message: str, queue_name: str, to: int = None) -> N
 
         with client.get_queue_sender(queue_name) as sender:
 
-            service_bus_message = ServiceBusMessage(message)
-            service_bus_message.to = to
+            service_bus_message = ServiceBusMessage(body=message, to=to)
             sender.send_messages(service_bus_message)
 
 

@@ -42,7 +42,6 @@ def test_get_key_vault_secret_returs_value(mocker, generate_int, generate_string
 def test_get_key_vault_secret_raises(mocker, generate_int, generate_string):
 
     secret_name = generate_int()
-    key_vault_uri = generate_string()
 
     mocker.patch("os.getenv")
 
@@ -50,9 +49,7 @@ def test_get_key_vault_secret_raises(mocker, generate_int, generate_string):
 
     key_vault_client = mocker.MagicMock()
     key_vault_client.get_secret = mocker.MagicMock(side_effect=ResourceNotFoundError())
-    secret_client = mocker.patch(
-        "shared.key_vault_helper.SecretClient", return_value=key_vault_client
-    )
+    mocker.patch("shared.key_vault_helper.SecretClient", return_value=key_vault_client)
 
     actual = get_key_vault_secret(secret_name)
 
@@ -135,9 +132,7 @@ def test_send_service_bus_message(mocker, generate_string, generate_int):
 
     sender_mock = client_mock.get_queue_sender.return_value.__enter__.return_value
 
-    service_bus_message_mock.assert_called_with(msg)
-
-    assert service_bus_message_object.to == to
+    service_bus_message_mock.assert_called_with(body=msg, to=to)
 
     sender_mock.send_messages.assert_called_with(service_bus_message_object)
 
