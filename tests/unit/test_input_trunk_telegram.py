@@ -99,7 +99,7 @@ def test_not_implemented(mocker, generate_int):
     mock_send_to_telegram_output = mocker.patch(
         "input_trunk_telegram.send_to_telegram_output"
     )
-    chat_id = generate_int
+    chat_id = generate_int()
     mock_getenv = mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_id)
 
     not_implemented(["a", "b"])

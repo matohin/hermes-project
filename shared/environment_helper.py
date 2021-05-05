@@ -20,3 +20,7 @@ def verify_key_vault_parameters(parameters: dict) -> None:
             if secret_value:
 
                 environ[parameter] = secret_value
+
+            else:
+
+                environ[parameter] = "NOT DEFINED"

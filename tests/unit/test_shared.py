@@ -56,17 +56,15 @@ def test_set_key_vault_secret(mocker):
     mock_client.set_secret.assert_called_once_with(secret_name, secret_value)
 
 
-def test_verify_key_vault_parameters(mocker):
+def test_verify_key_vault_parameters(mocker, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
+    key1 = generate_string(20, True)
+    key2 = generate_string(20, True)
+    key3 = generate_string(20, True)
 
-    key1 = "".join(choice(string.ascii_letters) for i in range(20))
-    key2 = "".join(choice(string.ascii_letters) for i in range(20))
-    key3 = "".join(choice(string.ascii_letters) for i in range(20))
-
-    value1 = "".join(choice(random_source) for i in range(20))
-    value2 = "".join(choice(random_source) for i in range(20))
-    value3 = "".join(choice(random_source) for i in range(20))
+    value1 = generate_string(20)
+    value2 = generate_string(20)
+    value3 = generate_string(20)
 
     parameters = {key1: value1, key2: value2, key3: value3}
 
@@ -85,8 +83,8 @@ def test_verify_key_vault_parameters(mocker):
     mock_env.get.assert_called_with(key3)
 
     mock_env.__setitem__.assert_any_call(key1, value1)
-    mock_env.__setitem__.assert_called_with(key2, value2)
-    assert mock_env.__setitem__.call_count == 2
+    mock_env.__setitem__.assert_any_call(key2, value2)
+    mock_env.__setitem__.assert_called_with(key3, "NOT DEFINED")
 
 
 def test_send_service_bus_message(mocker):
