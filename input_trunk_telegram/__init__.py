@@ -23,12 +23,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse()
 
 
-def id_checker(chat_id: int) -> bool:
+def id_checker(chat_id: str) -> bool:
 
     verify_key_vault_parameters(KEVAULT_ENV_VARS)
     authorized_chat_id = os.getenv("CHAT_ID")
 
-    if int(authorized_chat_id) == int(chat_id):
+    if str(authorized_chat_id) == str(chat_id):
         return True
     else:
         return False
@@ -64,7 +64,8 @@ def event_router(message_body: dict) -> None:
 
     if not execution_allowed:
         send_to_telegram_output(
-            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command", chat_id
+            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command",
+            chat_id,
         )
     elif not args.command:
         send_to_telegram_output("Input doesn't conatan a valid command", chat_id)
