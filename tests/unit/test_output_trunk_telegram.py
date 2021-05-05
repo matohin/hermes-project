@@ -7,13 +7,11 @@ from output_trunk_telegram import main, call_telegram_api
 from shared.environment_helper import verify_key_vault_parameters
 
 
-def test_call_telegram_api(mocker):
+def test_call_telegram_api(mocker, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-
-    method = "".join(choice(random_source) for i in range(20))
-    data = "".join(choice(random_source) for i in range(20))
-    token = "".join(choice(random_source) for i in range(20))
+    method = generate_string()
+    data = generate_string()
+    token = generate_string()
 
     response = mocker.Mock()
 
@@ -32,11 +30,10 @@ def test_call_telegram_api(mocker):
     response.raise_for_status.assert_called_once_with()
 
 
-def test_output_trunk_telegram_main(mocker):
+def test_output_trunk_telegram_main(mocker, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-    chat_id = "".join(choice(random_source) for i in range(20))
-    msg_text = "".join(choice(random_source) for i in range(20))
+    chat_id = generate_string()
+    msg_text = generate_string()
 
     mock_call_telegram_api = mocker.patch(
         "output_trunk_telegram.call_telegram_api", return_value=chat_id

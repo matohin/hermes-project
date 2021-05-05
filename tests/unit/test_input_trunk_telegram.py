@@ -110,12 +110,10 @@ def test_not_implemented(mocker, generate_int):
     )
 
 
-def test_chat_auth_granted(mocker):
+def test_chat_auth_granted(mocker, generate_string, generate_int):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-
-    chat_id = "".join(choice(string.digits) for i in range(6))
-    chat_auth_key = "".join(choice(random_source) for i in range(20))
+    chat_id = generate_int()
+    chat_auth_key = generate_string()
 
     mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
     mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key)
@@ -137,13 +135,11 @@ def test_chat_auth_granted(mocker):
     )
 
 
-def test_chat_auth_rejected(mocker):
+def test_chat_auth_rejected(mocker, generate_string, generate_int):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-
-    chat_id = "".join(choice(string.digits) for i in range(6))
-    chat_auth_key_expected = "".join(choice(random_source) for i in range(20))
-    chat_auth_key_provided = "".join(choice(random_source) for i in range(20))
+    chat_id = generate_int()
+    chat_auth_key_expected = generate_string()
+    chat_auth_key_provided = generate_string()
 
     mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
     mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key_expected)

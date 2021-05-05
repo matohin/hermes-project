@@ -8,17 +8,15 @@ from shared.service_bus_helper import send_to_telegram_output
 from shared.service_bus_helper import send_service_bus_message
 
 
-def test_get_key_vault_secret(mocker):
+def test_get_key_vault_secret(mocker, generate_int, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-
-    secret_name = "test-" + "".join(choice(string.digits) for i in range(8))
-    key_vault_uri = "".join(choice(string.digits) for i in range(10))
-    secret_value = "".join(choice(random_source) for i in range(20))
+    secret_name = generate_int()
+    key_vault_uri = generate_string()
+    secret_value = generate_string()
 
     mocker.patch("os.getenv", return_value=key_vault_uri)
 
-    credentials = "".join(choice(random_source) for i in range(20))
+    credentials = generate_string()
     mocker.patch(
         "shared.key_vault_helper.DefaultAzureCredential", return_value=credentials
     )
@@ -39,12 +37,10 @@ def test_get_key_vault_secret(mocker):
     assert actual == secret_value
 
 
-def test_set_key_vault_secret(mocker):
+def test_set_key_vault_secret(mocker, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-
-    secret_name = "".join(choice(string.ascii_letters) for i in range(10))
-    secret_value = "".join(choice(random_source) for i in range(20))
+    secret_name = generate_string(16, True)
+    secret_value = generate_string()
 
     mock_client = mocker.Mock()
     mocker.patch("shared.key_vault_helper.os.getenv")
@@ -87,13 +83,12 @@ def test_verify_key_vault_parameters(mocker, generate_string):
     mock_env.__setitem__.assert_called_with(key3, "NOT DEFINED")
 
 
-def test_send_service_bus_message(mocker):
+def test_send_service_bus_message(mocker, generate_string, generate_int):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-    connection_string = "".join(choice(random_source) for i in range(20))
-    msg = "".join(choice(random_source) for i in range(20))
-    queue_name = "".join(choice(random_source) for i in range(20))
-    to = int("".join(choice(string.digits) for i in range(20)))
+    connection_string = generate_string()
+    msg = generate_string()
+    queue_name = generate_string()
+    to = generate_int()
 
     mocker.patch("shared.service_bus_helper.os.getenv", return_value=connection_string)
 
@@ -125,11 +120,10 @@ def test_send_service_bus_message(mocker):
     sender_mock.send_messages.assert_called_with(service_bus_message_object)
 
 
-def test_send_to_telegram_output(mocker):
+def test_send_to_telegram_output(mocker, generate_string):
 
-    random_source = string.ascii_letters + string.digits + string.punctuation
-    msg = "".join(choice(random_source) for i in range(20))
-    to = "".join(choice(string.digits) for i in range(20))
+    msg = generate_string()
+    to = generate_string()
 
     mock_send_service_bus_message = mocker.patch(
         "shared.service_bus_helper.send_service_bus_message"
