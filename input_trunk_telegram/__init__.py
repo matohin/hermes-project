@@ -54,7 +54,7 @@ def event_router(message_body: dict) -> None:
 
     args, text = parser.parse_known_args(split_message_text)
 
-    chat_id = message_body["message"]["chat"]["id"]
+    chat_id = str(message_body["message"]["chat"]["id"])
 
     execution_allowed = id_checker(chat_id)
 
