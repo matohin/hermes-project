@@ -92,7 +92,7 @@ def chat_auth(additional_input: list) -> None:
 
     if additional_input[0] == os.getenv("CHAT_AUTH_KEY"):
 
-        set_key_vault_secret("chatAuthKey", incoming_chat_id)
+        set_key_vault_secret("chatId", incoming_chat_id)
 
         os.environ["CHAT_ID"] = incoming_chat_id
 

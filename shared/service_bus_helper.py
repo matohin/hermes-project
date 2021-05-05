@@ -2,7 +2,7 @@ from azure.servicebus import ServiceBusClient, ServiceBusMessage
 import os
 
 
-def send_service_bus_message(message: str, queue_name: str, to: int = None) -> None:
+def send_service_bus_message(message: str, queue_name: str, to: str = None) -> None:
 
     connection_string = os.getenv("AzureWebJobsAzureSBConnection")
 
@@ -14,6 +14,6 @@ def send_service_bus_message(message: str, queue_name: str, to: int = None) -> N
             sender.send_messages(service_bus_message)
 
 
-def send_to_telegram_output(msg: str, to: int) -> None:
+def send_to_telegram_output(msg: str, to: str) -> None:
 
     send_service_bus_message(msg, "sbq-telegram-otput", to)
