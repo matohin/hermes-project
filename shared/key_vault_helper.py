@@ -2,6 +2,7 @@ import os
 import logging
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
+from azure.core.exceptions import ResourceNotFoundError
 
 
 def get_key_vault_secret(secret_name: str) -> str:
@@ -13,10 +14,15 @@ def get_key_vault_secret(secret_name: str) -> str:
     client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
     logging.info(f"Starting secret retrival")
-    secret = client.get_secret(secret_name)
+    try:
+        secret = client.get_secret(secret_name)
+        value = secret.value
+    except ResourceNotFoundError:
+        value = None
+        logging.info(f"{secret_name} not found in {key_vault_uri}")
 
     logging.info(f"Returning secret data")
-    return secret.value
+    return value
 
 
 def set_key_vault_secret(secret_name: str, secret_value: str) -> None:

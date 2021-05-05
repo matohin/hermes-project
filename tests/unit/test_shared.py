@@ -1,6 +1,8 @@
 from secrets import choice
 import string
 
+from azure.core.exceptions import ResourceNotFoundError
+
 from shared.key_vault_helper import get_key_vault_secret
 from shared.key_vault_helper import set_key_vault_secret
 from shared.environment_helper import verify_key_vault_parameters
@@ -8,7 +10,7 @@ from shared.service_bus_helper import send_to_telegram_output
 from shared.service_bus_helper import send_service_bus_message
 
 
-def test_get_key_vault_secret(mocker, generate_int, generate_string):
+def test_get_key_vault_secret_returs_value(mocker, generate_int, generate_string):
 
     secret_name = generate_int()
     key_vault_uri = generate_string()
@@ -37,6 +39,26 @@ def test_get_key_vault_secret(mocker, generate_int, generate_string):
     assert actual == secret_value
 
 
+def test_get_key_vault_secret_raises(mocker, generate_int, generate_string):
+
+    secret_name = generate_int()
+    key_vault_uri = generate_string()
+
+    mocker.patch("os.getenv")
+
+    mocker.patch("shared.key_vault_helper.DefaultAzureCredential")
+
+    key_vault_client = mocker.MagicMock()
+    key_vault_client.get_secret = mocker.MagicMock(side_effect=ResourceNotFoundError())
+    secret_client = mocker.patch(
+        "shared.key_vault_helper.SecretClient", return_value=key_vault_client
+    )
+
+    actual = get_key_vault_secret(secret_name)
+
+    assert actual == None
+
+
 def test_set_key_vault_secret(mocker, generate_string):
 
     secret_name = generate_string(16, True)
@@ -58,9 +80,9 @@ def test_verify_key_vault_parameters(mocker, generate_string):
     key2 = generate_string(20, True)
     key3 = generate_string(20, True)
 
-    value1 = generate_string(20)
-    value2 = generate_string(20)
-    value3 = generate_string(20)
+    value1 = generate_string()
+    value2 = generate_string()
+    value3 = generate_string()
 
     parameters = {key1: value1, key2: value2, key3: value3}
 
