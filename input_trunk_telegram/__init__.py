@@ -64,20 +64,21 @@ def event_router(message_body: dict) -> None:
 
     if not execution_allowed:
         send_to_telegram_output(
-            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command"
+            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command", chat_id
         )
     elif not args.command:
-        send_to_telegram_output("Input doesn't conatan a valid command")
+        send_to_telegram_output("Input doesn't conatan a valid command", chat_id)
     else:
         args.command(text)
 
 
 def not_implemented(additional_input: list) -> None:
 
-    logging.warning(f"Command is not implemented")
-    send_to_telegram_output(
-        "This command is not implemented yet",
-    )
+    logging.warning("Command is not implemented")
+
+    to = os.getenv("CHAT_ID")
+
+    send_to_telegram_output("This command is not implemented yet", to)
 
 
 def chat_auth(additional_input: list) -> None:
@@ -86,17 +87,25 @@ def chat_auth(additional_input: list) -> None:
 
     verify_key_vault_parameters(KEVAULT_ENV_VARS)
 
+    incoming_chat_id = additional_input[-1]
+
     if additional_input[0] == os.getenv("CHAT_AUTH_KEY"):
 
-        set_key_vault_secret("chatAuthKey", additional_input[-1])
+        set_key_vault_secret("chatAuthKey", incoming_chat_id)
+
+        os.environ["CHAT_ID"] = incoming_chat_id
 
         send_to_telegram_output(
-            "Authentication succesfull. Please, remove key from the chat."
+            "Authentication succesfull. Please, remove key from the chat.",
+            incoming_chat_id,
         )
 
     else:
 
-        send_to_telegram_output("Key doesn't match. Please, try again.")
+        send_to_telegram_output(
+            "Key doesn't match. Please, try again.",
+            incoming_chat_id,
+        )
 
 
 def echo(additional_input: list) -> None:
@@ -104,4 +113,6 @@ def echo(additional_input: list) -> None:
     logging.warning("Sending additional input as echo")
 
     msg = " ".join(additional_input)
-    send_to_telegram_output(msg)
+    to = os.getenv("CHAT_ID")
+
+    send_to_telegram_output(msg, to)

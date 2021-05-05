@@ -1,4 +1,5 @@
 import azure.functions as func
+from unittest.mock import call
 from input_trunk_telegram import (
     main,
     event_router,
@@ -32,22 +33,25 @@ def test_input_trunk_telegram(mocker):
 @pytest.mark.parametrize(
     "telegram_input, expected_function, expected_parameter, chat_id_check_result",
     [
-        ("/echo some text", "echo", ["some", "text"], True),
-        ("/graph_auth other stuff", "not_implemented", ["other", "stuff"], True),
-        ("/graph_auth", "not_implemented", [], True),
+        ("/echo some text", "echo", call(["some", "text"]), True),
+        ("/graph_auth other stuff", "not_implemented", call(["other", "stuff"]), True),
+        ("/graph_auth", "not_implemented", call([]), True),
         (
             "invalid commnd",
             "send_to_telegram_output",
-            "Input doesn't conatan a valid command",
+            call("Input doesn't conatan a valid command", "123456"),
             True,
         ),
         (
             "/graph_auth",
             "send_to_telegram_output",
-            "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command",
+            call(
+                "This chat is not authorized to send commands. \nPlease authenticate with /chat_auth chat_key command",
+                "123456",
+            ),
             False,
         ),
-        ("/chat_auth secret", "chat_auth", ["secret", "123456"], False),
+        ("/chat_auth secret", "chat_auth", call(["secret", "123456"]), False),
     ],
 )
 def test_event_router(
@@ -67,7 +71,7 @@ def test_event_router(
 
     mock_id_checker.assert_called_once_with(chat_id)
 
-    function_mock.assert_called_with(expected_parameter)
+    function_mock.assert_has_calls([expected_parameter])
 
 
 @pytest.mark.parametrize(
@@ -90,6 +94,22 @@ def test_id_checker_false(chat_id_env, chat_id_input, expected, mocker):
     assert actual == expected
 
 
+def test_not_implemented(mocker, generate_int):
+
+    mock_send_to_telegram_output = mocker.patch(
+        "input_trunk_telegram.send_to_telegram_output"
+    )
+    chat_id = generate_int
+    mock_getenv = mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_id)
+
+    not_implemented(["a", "b"])
+
+    mock_getenv.assert_called_once_with("CHAT_ID")
+    mock_send_to_telegram_output.assert_called_once_with(
+        "This command is not implemented yet", chat_id
+    )
+
+
 def test_chat_auth_granted(mocker):
 
     random_source = string.ascii_letters + string.digits + string.punctuation
@@ -99,6 +119,7 @@ def test_chat_auth_granted(mocker):
 
     mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
     mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key)
+    mock_environ = mocker.patch("input_trunk_telegram.os.environ")
     mock_set_key_vault_secret = mocker.patch(
         "input_trunk_telegram.set_key_vault_secret"
     )
@@ -107,9 +128,12 @@ def test_chat_auth_granted(mocker):
     )
 
     chat_auth([chat_auth_key, chat_id])
+
     mock_set_key_vault_secret.assert_called_once_with("chatAuthKey", chat_id)
+    mock_environ.__setitem__.assert_called_once_with("CHAT_ID", chat_id)
+
     mock_send_to_telegram_output.assert_called_once_with(
-        "Authentication succesfull. Please, remove key from the chat."
+        "Authentication succesfull. Please, remove key from the chat.", chat_id
     )
 
 
@@ -123,6 +147,7 @@ def test_chat_auth_rejected(mocker):
 
     mocker.patch("input_trunk_telegram.verify_key_vault_parameters")
     mocker.patch("input_trunk_telegram.os.getenv", return_value=chat_auth_key_expected)
+    mock_environ = mocker.patch("input_trunk_telegram.os.environ")
     mock_set_key_vault_secret = mocker.patch(
         "input_trunk_telegram.set_key_vault_secret"
     )
@@ -131,9 +156,12 @@ def test_chat_auth_rejected(mocker):
     )
 
     chat_auth([chat_auth_key_provided, chat_id])
+
     mock_set_key_vault_secret.assert_not_called()
+    mock_environ.__setitem__.assert_not_called()
+
     mock_send_to_telegram_output.assert_called_once_with(
-        "Key doesn't match. Please, try again."
+        "Key doesn't match. Please, try again.", chat_id
     )
 
 
@@ -143,19 +171,11 @@ def test_echo(mocker):
         "input_trunk_telegram.send_to_telegram_output"
     )
 
+    mock_getenv = mocker.patch(
+        "input_trunk_telegram.os.getenv",
+        return_value=123456,
+    )
+
     echo(["a", "b"])
 
-    mock_send_to_telegram_output.assert_called_once_with("a b")
-
-
-def test_not_implemented(mocker):
-
-    mock_send_to_telegram_output = mocker.patch(
-        "input_trunk_telegram.send_to_telegram_output"
-    )
-
-    not_implemented(["a", "b"])
-
-    mock_send_to_telegram_output.assert_called_once_with(
-        "This command is not implemented yet"
-    )
+    mock_send_to_telegram_output.assert_called_once_with("a b", 123456)
